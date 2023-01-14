@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+SCRIPT_PATH="$0"
+FULL_SCRIPT_PATH="$( realpath "$SCRIPT_PATH" )"
+"$(dirname "$FULL_SCRIPT_PATH")"/init tasks --all

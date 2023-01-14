@@ -1,0 +1,69 @@
+#!/usr/bin/env sh
+
+exitWithErrorMsg() {
+  if [ "" = "$1" ]; then
+    echo "Unknown Error"
+    exit 101
+  fi
+  echo "$*"
+  exit "$1"
+} >&2
+
+SCRIPT_FULL_PATH="$(realpath "$0")"
+
+cd "$(dirname "$SCRIPT_FULL_PATH")" || exitWithErrorMsg 102 "dirname of $SCRIPT_FULL_PATH not found"
+
+. app_sh_lib/app_runtime_lib.sh
+
+ensure_app_by_script_place "$SCRIPT_FULL_PATH"
+
+  cat << EOF > "$APP_BY_SCRIPT_TOOL_FILE"
+buildscript {
+    val srcRootsOfSimpleApp = listOf(
+                                      "$( realpath "$PLACE_OF_SCRIPT_FULL_PATH/.." )",
+                                      )
+    val ScriptTemplateUtilCode = file("$( realpath "$PLACE_OF_SCRIPT_FULL_PATH/.." )/plus/scriptTemplate/code/ScriptTemplateUtil.kt")
+    val scriptTemplateName = "$( basename "$PLACE_OF_SCRIPT_FULL_PATH" )"
+EOF
+  cat << 'EOF' >> "$APP_BY_SCRIPT_TOOL_FILE"
+    val generatedScriptText = """
+buildscript {
+${ScriptTemplateUtilCode.readText()}
+    val generatedScriptText = ${ScriptTemplateUtilCode.nameWithoutExtension}()
+            .scriptTextFromTemplate("${ScriptTemplateUtilCode.absoluteFile}", "$scriptTemplateName", listOf(${srcRootsOfSimpleApp.joinToString { "\"$it\"" }}))
+    apply(from = ".gradle/__${rootProject.name}_step2_generated.gradle.kts".also {
+        file(it).run {
+            if (exists() && readText() == generatedScriptText) {
+                println("No need to update file :${'$'}absolutePath")
+            } else {
+                if (exists()) {
+                    println("           Update file :${'$'}absolutePath")
+                } else {
+                    parentFile.mkdirs()
+                    println("          Create  file :${'$'}absolutePath")
+                }
+                writeText(generatedScriptText)
+            }
+        }
+    })
+}""".trim()
+    apply(from = ".gradle/__${rootProject.name}_step1_generated.gradle.kts".also {
+        file(it).run {
+            if (exists() && readText() == generatedScriptText) {
+                println("No need to update File :$absolutePath")
+            } else {
+                if (exists()) {
+                    println("           Update File :$absolutePath")
+                } else {
+                    parentFile.mkdirs()
+                    println("          Create  File :$absolutePath")
+                }
+                writeText(generatedScriptText)
+            }
+        }
+    })
+}
+EOF
+
+# shellcheck disable=SC2086
+"$TOOL_ONE_RUN_CMD" $TOOL_ONE_RUN_DEFAULT_ARGS "$@"

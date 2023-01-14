@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/modules/_0/all_sources.iml" filepath="$PROJECT_DIR$/modules/_0/all_sources.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/_0/gen_py_envs.iml" filepath="$PROJECT_DIR$/modules/_0/gen_py_envs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/_0/generated_files.iml" filepath="$PROJECT_DIR$/modules/_0/generated_files.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/_0/project_config.iml" filepath="$PROJECT_DIR$/modules/_0/project_config.iml" />
+    </modules>
+  </component>
+</project>

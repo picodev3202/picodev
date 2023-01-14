@@ -1,0 +1,58 @@
+#!/usr/bin/env sh
+
+exitWithErrorMsg() {
+  if [ "" = "$1" ]; then
+    echo "Unknown Error"
+    exit 101
+  fi
+  echo "$*"
+  exit "$1"
+} >&2
+
+SCRIPT_FULL_PATH="$(realpath "$0")"
+
+cd "$(dirname "$SCRIPT_FULL_PATH")" || exitWithErrorMsg 102 "dirname of $SCRIPT_FULL_PATH not found"
+
+. app_sh_lib/app_runtime_lib.sh
+
+lookupDevPlace0
+
+lookupDevPlace "$SCRIPT_FULL_PATH"
+
+echo "SCRIPT_FULL_PATH          $SCRIPT_FULL_PATH"
+echo "PLACE_OF_SCRIPT_FULL_PATH $PLACE_OF_SCRIPT_FULL_PATH"
+echo "SCRIPT_NAME               $SCRIPT_NAME"
+echo "DEV_PLACE_ROOT_FULL_PATH  $DEV_PLACE_ROOT_FULL_PATH"
+echo "DEV_PLACE_NAME            $DEV_PLACE_NAME"
+echo "DEV_PLACE_GEN_DIR         $DEV_PLACE_GEN_DIR"
+echo "DEV_PLACE_GEN_TMP         $DEV_PLACE_GEN_TMP"
+
+ensureRunDir
+
+echo "RUN_DIR                   $RUN_DIR"
+
+RUN_OUT_DIR="$RUN_DIR/out_$DEV_PLACE_NAME"
+PRJ_OUT="$DEV_PLACE_GEN_DIR/out"
+
+if [ -d "$RUN_OUT_DIR" ]; then
+  if [ -e "$RUN_OUT_DIR"/file_from_app_by_script ]; then
+    echo "cleanup run  $RUN_OUT_DIR"
+    rm -rf "$RUN_OUT_DIR"
+  fi
+fi
+
+if [ -L "$PRJ_OUT" ]; then
+  echo "cleanup link $PRJ_OUT"
+  rm "$PRJ_OUT"
+fi
+
+if [ -d "$PRJ_OUT" ]; then
+  echo "cleanup  dir $PRJ_OUT"
+  rm -rf "$PRJ_OUT"
+fi
+
+mkdir --parents "$RUN_OUT_DIR"
+touch "$RUN_OUT_DIR/file_from_app_by_script"
+
+echo ln -s "$RUN_OUT_DIR" "$PRJ_OUT"
+ln -s "$RUN_OUT_DIR" "$PRJ_OUT"
