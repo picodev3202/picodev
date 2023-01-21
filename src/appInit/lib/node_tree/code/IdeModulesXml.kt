@@ -23,7 +23,7 @@ ${modulesPlace.joinToString("\n")}
 
 
     val moduleXmlKt = fun(contentUrl: String, srcsUrls: List<String>, deps: List<String>) = """<?xml version="1.0" encoding="UTF-8"?>
-<module type="JAVA_MODULE" version="3">
+<module type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content $contentUrl">
@@ -78,9 +78,10 @@ ${deps.joinToString("") { "$it\n" }}  </component>
         prjName: String,
         place: LocalFile,
         srcStr: String,
-        path: ModulePath,
+        path: NodePath,
         moduleItemType: DefaultTypes.ItemType,
-        deps: List<ModulePath>
+        deps: List<NodePath>,
+        libraries: List<LibraryContent>
     ): String {
         val pathStr = path.fs
         val urlBegin = """url="file://${'$'}MODULE_DIR${'$'}/../../../../$srcStr/"""
@@ -108,8 +109,13 @@ ${deps.joinToString("") { "$it\n" }}  </component>
         println("IdeModulesXml.moduleGeneric $moduleFile")
         moduleFile.apply { parentFile.mkdirs() }
             .writeText(
-                moduleItemType.moduleXmlStr(contentUrl, srcsUrls, deps.map { """    <orderEntry type="module" module-name="${it.ide}" />""" })
+                moduleItemType.moduleXmlStr(contentUrl, srcsUrls,
+                    deps.map { """    <orderEntry type="module" module-name="${it.ide}" />""" }
+                        .plus(libraries.map { """    <orderEntry type="library" name="${it.name}" level="project" />""" })
+                )
             )
         return moduleRelativePath
     }
+
+    val NodePath.ide get() = list.joinToString(".")
 }

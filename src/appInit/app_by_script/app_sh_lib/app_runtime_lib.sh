@@ -47,10 +47,6 @@ ensureOneRunCmd() {
   fi
 }
 
-lookupDevPlace0() {
-  echo "SCRIPT_FULL_PATH       is $SCRIPT_FULL_PATH"
-}
-
 lookupDevPlace() { # lookupDevPlace $SCRIPT_FULL_PATH
   SCRIPT_FULL_PATH="$1"
   SCRIPT_NAME="$(basename "$SCRIPT_FULL_PATH")"

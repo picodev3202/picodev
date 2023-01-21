@@ -17,8 +17,12 @@ cd "$(dirname "$SCRIPT_FULL_PATH")" || exitWithErrorMsg 102 "dirname of $SCRIPT_
 
 ensure_app_by_script_place "$SCRIPT_FULL_PATH"
 
-cat << EOF > "$APP_BY_SCRIPT__DIR/apps_list.txt"
-$(realpath "$PLACE_OF_SCRIPT_FULL_PATH/..")
+cat <<EOF >"$APP_BY_SCRIPT__DIR/apps_list.txt"
+//$(realpath "$PLACE_OF_SCRIPT_FULL_PATH/..")
+$(realpath "$PLACE_OF_SCRIPT_FULL_PATH/../plus/app0")
+$(realpath "$PLACE_OF_SCRIPT_FULL_PATH/../plus/app1")
+$(realpath "$PLACE_OF_SCRIPT_FULL_PATH/../plus/app2")
+$(realpath "$PLACE_OF_SCRIPT_FULL_PATH/../plus/app3")
 EOF
 
 scriptTemplateName="$( basename "$PLACE_OF_SCRIPT_FULL_PATH" )"

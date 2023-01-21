@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+
+exitWithErrorMsg() {
+  if [ "" = "$1" ]; then
+    echo "Unknown Error"
+    exit 101
+  fi
+  echo "$*"
+  exit "$1"
+} >&2
+
+SCRIPT_FULL_PATH="$(realpath "$0")"
+
+cd "$(dirname "$SCRIPT_FULL_PATH")" || exitWithErrorMsg 102 "dirname of $SCRIPT_FULL_PATH not found"
+
+. app_sh_lib/app_runtime_lib.sh
+
+lookupOneRunCmd # and ensureRunDir() ... $RUN_DIR
+
+if [ -d "$TOOL_ONE_RUN_HOME" ]; then
+  if [ -e "$TOOL_ONE_RUN_HOME"/file_from_app_by_script ]; then
+    echo cleanup "$TOOL_ONE_RUN_HOME"
+
+    # shellcheck disable=SC2086
+    "$TOOL_ONE_RUN_CMD" $TOOL_ONE_RUN_DEFAULT_ARGS --stop
+  fi
+fi
+
+for one_run_dir in "$RUN_DIR"/orun_* "$RUN_DIR"/onerun_*; do
+  if [ -e "$one_run_dir"/file_from_app_by_script ]; then
+    echo cleanup "$one_run_dir"
+    rm -rf "$one_run_dir"
+  fi
+done

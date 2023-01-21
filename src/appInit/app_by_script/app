@@ -15,8 +15,6 @@ cd "$(dirname "$SCRIPT_FULL_PATH")" || exitWithErrorMsg 102 "dirname of $SCRIPT_
 
 . app_sh_lib/app_runtime_lib.sh
 
-lookupDevPlace0
-
 lookupDevPlace "$SCRIPT_FULL_PATH"
 
 echo  "SCRIPT_FULL_PATH          $SCRIPT_FULL_PATH"

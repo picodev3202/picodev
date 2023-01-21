@@ -2,4 +2,4 @@
 
 SCRIPT_PATH="$0"
 FULL_SCRIPT_PATH="$( realpath "$SCRIPT_PATH" )"
-"$(dirname "$FULL_SCRIPT_PATH")"/init appInit__cmd_appInit
+"$(dirname "$FULL_SCRIPT_PATH")"/init appInit

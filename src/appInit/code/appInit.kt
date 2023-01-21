@@ -1,17 +1,9 @@
 @Suppress("ClassName", "unused", "PropertyName", "MoveLambdaOutsideParentheses")
 object appInit : NodeItems() {
-    object type {
-        val KtCode = DefaultTypes.data.KtCode
-        val JvKt = DefaultTypes.data.JvKt
-        val Kt = DefaultTypes.data.Kt
-        val Jv = DefaultTypes.data.Jv
-        val BoardCode = DefaultTypes.data.BoardCode
-    }
-
     class Template {
         open class suit_board_code : _General() {
             val board_code = _Py({ of(type.BoardCode) })
-            val code = _____KtJv({ of(type.JvKt) depends on(src.appInit.lib.dev_project) })
+            val code = _____KtJv({ of(type.JvKt) depends on(src.appInit.lib.dev_project, library.jSerialComm_2_9_2) })
         }
 
         open class SimpleApp(private val lib: Lib = Lib()) : _Kt({ of(type.KtCode) depends on(lib.one, lib.two) }) {
@@ -36,9 +28,13 @@ object appInit : NodeItems() {
                 val local_properties_generate_code = _Kt({ of(type.Kt) depends on(libOfAppInit.dev_project) })
                 val quick_run_main = _________________Kt({ of(type.Kt) depends on(libOfAppInit.dev_project) })
                 private val quick_code = _____________Kt({ of(type.Kt) depends on(quick_run_main) })
-                val scriptTemplate = _________________Kt({ of(type.KtCode) }) // 'of(type.KtCode)' required, used from src/appInit/app_simple_by_gradle
+                private val scriptTemplate = _________Kt({ })
             }
         }
+    }
+
+    object library {
+        val jSerialComm_2_9_2 = _Library("jSerialComm-2.9.2")
     }
 
     object src : SrcPlace() {
@@ -81,10 +77,10 @@ object appInit : NodeItems() {
             val moduleItemType = item.module.type
             println("Init.main ${item.path} ${moduleItemType is DefaultTypes.ItemType}")
             if (moduleItemType is DefaultTypes.ItemType) {
-                modulesRelativePath.add(utilModulesXml.moduleGeneric(prjName, place, placeSrcStr, item.path, moduleItemType, item.allDependency))
+                modulesRelativePath.add(utilModulesXml.moduleGeneric(prjName, place, placeSrcStr, item.path, moduleItemType, item.allDependency, item.libraries))
                 val moduleDir = LocalFile(placeSrc, item.path.fs).apply { mkdirs() }
-                if (item.copyContentOf.isInstanceOfNotEmpty) {
-                    val from = LocalFile(placeSrc, item.copyContentOf.fs)
+                item.copyContentOf?.run {
+                    val from = LocalFile(placeSrc, fs)
                     println("Init.main  copy from : $from to : $moduleDir")
                     from.walk().onEnter {file -> when (file.name) {//@formatter:off
                         ".gradle", "build" -> {                  file.deleteIfExist; false}
