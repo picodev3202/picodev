@@ -26,6 +26,7 @@ lookupOneRunCmd() {
   TOOL_ONE_RUN_CMD=/opt/local/gradle/bin/gradle
   TOOL_ONE_RUN_HOME="$RUN_DIR/one_run_home"
   TOOL_ONE_RUN_DEFAULT_ARGS="--gradle-user-home=$TOOL_ONE_RUN_HOME --offline"
+  export JAVA_HOME=/opt/local/jdk
 }
 
 ensureOneRunCmd() {

@@ -1,33 +1,11 @@
 #!/usr/bin/env sh
 
-exitWithErrorMsg() {
-  if [ "" = "$1" ]; then
-    echo "Unknown Error"
-    exit 101
-  fi
-  echo "$*"
-  exit "$1"
-} >&2
+CMD='nvim --clean -l'
+SCRIPT="$(dirname "$(realpath "$0")")"/lua/app.lua
 
-SCRIPT_FULL_PATH="$(realpath "$0")"
 
-cd "$(dirname "$SCRIPT_FULL_PATH")" || exitWithErrorMsg 102 "dirname of $SCRIPT_FULL_PATH not found"
+#RESULT_CMD=$($CMD "$SCRIPT" echoAppsByScriptStartCmd '..' '../plus/app0' '../plus/app1' '../plus/app2' '../plus/app3' )
+RESULT_CMD=$($CMD "$SCRIPT" echoAppsByScriptStartCmd      '../plus/app0' '../plus/app1' '../plus/app2' '../plus/app3' )
 
-. app_sh_lib/app_runtime_lib.sh
-
-ensure_app_by_script_place "$SCRIPT_FULL_PATH"
-
-cat <<EOF >"$APP_BY_SCRIPT__DIR/apps_list.txt"
-//$(realpath "$PLACE_OF_SCRIPT_FULL_PATH/..")
-$(realpath "$PLACE_OF_SCRIPT_FULL_PATH/../plus/app0")
-$(realpath "$PLACE_OF_SCRIPT_FULL_PATH/../plus/app1")
-$(realpath "$PLACE_OF_SCRIPT_FULL_PATH/../plus/app2")
-$(realpath "$PLACE_OF_SCRIPT_FULL_PATH/../plus/app3")
-EOF
-
-scriptTemplateName="$( basename "$PLACE_OF_SCRIPT_FULL_PATH" )"
-tail --lines=+10 "$PLACE_OF_SCRIPT_FULL_PATH/../plus/scriptTemplate/kt/${scriptTemplateName}.kt" >"$APP_BY_SCRIPT_TOOL_FILE"
-
-#echo "$TOOL_ONE_RUN_CMD" $TOOL_ONE_RUN_DEFAULT_ARGS "$@"
-# shellcheck disable=SC2086
-"$TOOL_ONE_RUN_CMD" $TOOL_ONE_RUN_DEFAULT_ARGS "$@"
+echo "RESULT_CMD: })>$RESULT_CMD<({"
+sh  -c "$RESULT_CMD $*"

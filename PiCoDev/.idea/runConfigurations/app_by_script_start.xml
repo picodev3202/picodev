@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="app_by_script_start" type="lua.app" factoryName="Lua Application">
+    <option name="program" value="nvim" />
+    <option name="file" value="$PROJECT_DIR$/../src/appInit/app_by_script/lua/app_start.lua" />
+    <option name="workingDir" value="$PROJECT_DIR$/../src/appInit/app_by_script/lua" />
+    <option name="debuggerType" value="2" />
+    <option name="params" value="--clean -l " />
+    <option name="charset" value="UTF-8" />
+    <option name="showConsole" value="true" />
+    <method v="2" />
+  </configuration>
+</component>

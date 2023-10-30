@@ -1,4 +1,4 @@
-object DefaultTypes  {
+object DefaultTypes {
 
     abstract class ItemType(
         val srcs: List<Pair<String, Pair<String, (String, String) -> String>>>,

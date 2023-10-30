@@ -1,5 +1,7 @@
 object QuickRun {
     interface Main {
+        val objectName get() = this::class.java.name
+        val logTagName get() = objectName
         fun main(thisFile: LocalFile, args: List<String>)
     }
 
