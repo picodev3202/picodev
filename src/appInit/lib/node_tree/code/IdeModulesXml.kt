@@ -13,6 +13,7 @@ object IdeModulesXml : NodeItems() {
       <module fileurl="file://${'$'}PROJECT_DIR${'$'}/modules/_0/all_sources.iml" filepath="${'$'}PROJECT_DIR${'$'}/modules/_0/all_sources.iml" />
       <module fileurl="file://${'$'}PROJECT_DIR${'$'}/modules/_0/gen_py_envs.iml" filepath="${'$'}PROJECT_DIR${'$'}/modules/_0/gen_py_envs.iml" />
       <module fileurl="file://${'$'}PROJECT_DIR${'$'}/modules/_0/generated_files.iml" filepath="${'$'}PROJECT_DIR${'$'}/modules/_0/generated_files.iml" />
+      <module fileurl="file://${'$'}PROJECT_DIR${'$'}/modules/_0/plus.iml" filepath="${'$'}PROJECT_DIR${'$'}/modules/_0/plus.iml" />
       <module fileurl="file://${'$'}PROJECT_DIR${'$'}/modules/_0/project_config.iml" filepath="${'$'}PROJECT_DIR${'$'}/modules/_0/project_config.iml" />
 
 ${modulesPlace.joinToString("\n")}
