@@ -1,7 +1,17 @@
 #!/usr/bin/env sh
+#
+#
+#
+#
+#
+#
+#
+#
+#
+
+###
 
 CMD='nvim --clean -l'
 SCRIPT="$(dirname "$(realpath "$0")")"/lua/app.lua
-
 
 $CMD "$SCRIPT" link_out_place
