@@ -1,20 +1,70 @@
+import kotlin.reflect.KClass
+
 object LocalPropertiesQuickHelperTool : LocalPropertiesConst by LocalPropertiesConst {
-    class QuickNamedString {
-        class Val {
+
+    sealed class QuickNamed<T : QuickNamed.ValCommon>(private val _val: T) {
+        abstract class ValCommon {
             var name = ""
-            var value = ""
-            operator fun rangeTo(value: String): Unit = run { this.value = value }
-            override fun toString() = "(name=$name, value=$value)"
+
+            //override fun toString() = "(name=$name, value=$value)"
+            abstract fun update(content: ValCommon)
         }
 
-        private val _val = Val()
         operator fun getValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>) = _val.apply { name = property.name }
+    }
+
+    class QuickNamedString : QuickNamed<QuickNamedString.Val>(Val()) {
+        class Val : ValCommon() {
+            var value = ""
+            override fun update(content: ValCommon) {
+                if (content is Val) {
+                    value = content.value
+                }
+            }
+
+            operator fun rangeTo(value: String): Unit = run { this.value = value }
+        }
+    }
+
+    class QuickNamedHighlight : QuickNamed<QuickNamedHighlight.Val>(Val()) {
+        class Val : ValCommon() {
+            var base = ""
+            var value = emptyList<String>()
+
+            override fun update(content: ValCommon) {
+                if (content is Val) {
+                    base = content.base
+                    value = content.value
+                }
+            }
+
+            operator fun invoke(base: String, list: List<String>): Unit = run {
+                this.base = base.trim(); this.value = list
+            }
+
+            operator fun invoke(list: List<String>): Unit = run {
+                this.base = this.name; this.value = list
+            }
+        }
+    }
+
+    class QuickNamedType(val klass: KClass<out QuickNamed<*>>) {
+        val klassVal: KClass<out Any> = when (klass) {
+            QuickNamedString::class -> QuickNamedString.Val::class
+            QuickNamedHighlight::class -> QuickNamedHighlight.Val::class
+            else -> TODO()
+        }
+
+        companion object {
+            val string = QuickNamedType(QuickNamedString::class)
+            val highlight = QuickNamedType(QuickNamedHighlight::class)
+        }
     }
 
     object UpdateHelper {
         private val uid by lazy { "id --user".exec().trim() }
         private val systemTempDir by lazy { "/tmp/" }
-        private val userRuntimeDirInMemory by lazy { "/var/run/user/$uid" }
+        private val userRuntimeDirInMemory by lazy { "/run/user/$uid" }
 
         operator fun invoke(args: Array<String>, configure: ParamsForUpdateLocalProperties.() -> Unit) {
             val params = ParamsForUpdateLocalProperties()
@@ -71,26 +121,8 @@ KotlinVersion.CURRENT
                 println("UpdateHelper confTmpPlace ${tmpDirNew.absolutePath}")
             }
 
-            val highlightsFileRelativePath = fun(it: QuickNamedString.Val): String {
-                val highlightsFile = it.value.trim()
-                if (highlightsFile.isNotEmpty()) {
-                    val filePathByRelative = LocalFile(devProject.srcPlace, highlightsFile)
-                    if (filePathByRelative.exists()) {
-                        println("${it.name} 'file:///${filePathByRelative.absolutePath}'")
-                        return highlightsFile
-                    }
-                    val srcPlacePath = devProject.srcPlace.absolutePath
-                    val filePath = LocalFile(highlightsFile).absolutePath
-                    println("${it.name} 'file:///${filePath}'")
-                    @Suppress("UnnecessaryVariable")
-                    val fileRelativePath = if (filePath.startsWith(srcPlacePath)) filePath.substring(srcPlacePath.length).trim(LocalFile.separatorChar)
-                    else TODO("value of ${it.name} is invalid '${it.value}'")
-                    return fileRelativePath
-                }
-                return ""
-            }
             val highlights = ParamsOfHighlights()
-            highlights.forEach { it.value = highlightsFileRelativePath(params.propertyByName(it.name)) }
+            highlights.forEach { it.update(params.propertyByName(it.name)) }
 
             confTmpPlace(params.params_prefixOfTmpDirQuick, conf_place.of__tmp_dir_quick, userRuntimeDirInMemory) { "${devProject.name}_$it" }
             confTmpPlace(params.params_prefixOfTmpDirBig, conf_place.of__tmp_dir_big, systemTempDir) { "${devProject.name}_${uid}_$it" }
@@ -108,7 +140,11 @@ KotlinVersion.CURRENT
 
             if (devProject.localProperties.pathOfIdeScripting.isEmpty()) println("path to 'ide scripting' is undefined")
             else println("value of 'default ide script' is 'file:///${LocalFile(devProject.extPlace.ideScripting, defaultIdeScript)}'")
-            highlights.forEach { if (it.value.isNotEmpty()) println("${it.name}   is 'file:///${LocalFile(devProject.srcPlace, it.value)}'") }
+            highlights.forEach {
+                if (it is QuickNamedHighlight.Val) {
+                    it.value.forEachIndexed { idx, path -> println("${it.name}[$idx]   is 'file:///${LocalFile(devProject.rootPlace.file(it.base), path)}'") }
+                } else if (it is QuickNamedString.Val && it.value.isNotEmpty()) println("${it.name}   is 'file:///${LocalFile(devProject.srcPlace, it.value)}'")
+            }
         }
     }
 
@@ -142,15 +178,53 @@ KotlinVersion.CURRENT
         } else println("nothing to write: file:///$absolutePath")
     } else println("already exists:   file:///$absolutePath")
 
+    private fun highlightsFileRelativePath(name: String, value: String, basePlace: LocalFile): String {
+        val highlightsFile = value.trim()
+        if (highlightsFile.isNotEmpty()) {
+            val filePathByRelative = LocalFile(basePlace, highlightsFile)
+            if (filePathByRelative.exists()) {
+                println("$name 'file:///${filePathByRelative.absolutePath}'")
+                return highlightsFile
+            }
+            val srcPlacePath = basePlace.absolutePath
+            val filePath = LocalFile(highlightsFile).absolutePath
+            println("$name 'file:///${filePath}'")
+            val fileRelativePath = if (filePath.startsWith(srcPlacePath)) filePath.substring(srcPlacePath.length).trim(LocalFile.separatorChar)
+            else TODO("value of $name is invalid '$value'")
+            return fileRelativePath
+        }
+        return ""
+    }
+
     private fun normalizeHelper(devProject: DevProject, highlights: ParamsOfHighlights = ParamsOfHighlights()) {
         val objectName = this::class.java.name
         val updateHelperName = UpdateHelper::class.java.name.split("$").last()
         val quickNamedStringName = QuickNamedString::class.java.name.split("$").last()
         val quickNamedStringValName = QuickNamedString.Val::class.java.name.split("$").last()
+        val quickNamedName = QuickNamed::class.java.name.split("$").last()
+        val quickNamedValName = QuickNamed.ValCommon::class.java.name.split("$").last()
+
         val paramsOfHighlightsName = ParamsOfHighlights::class.java.name
         val paramsForUpdateLocalPropertiesName = ParamsForUpdateLocalProperties::class.java.name
 
-        class Item(val name: String, val value: String)
+        class Item(val type: QuickNamedType, val name: String, val base: String = "", val valueStr: String = "", val valueList: List<String> = emptyList()) {
+            fun represent(): String {
+                return when (type) {
+                    QuickNamedType.string -> "    ${name}..\"${highlightsFileRelativePath(name, valueStr, devProject.srcPlace)}\""
+                    QuickNamedType.highlight -> "    ${name}(${if (base.isEmpty() || name == base) "" else "\"${base}\", "}listOf(\n${
+                        valueList.joinToString("") {
+                            "        \"${highlightsFileRelativePath(name, it, devProject.rootPlace.file(base))}\",\n"
+                        }
+                    }    ))"
+
+                    else -> TODO()
+                }
+            }
+
+            val typeNameRepresent: String = type.klass.java.name.split("$").last()
+        }
+
+        fun itemStr(name: String, value: String) = Item(QuickNamedType.string, name, valueStr = value)
 
         //@formatter:on
         val foundFiles = devProject.srcPlace.walk().onEnter {
@@ -171,42 +245,51 @@ KotlinVersion.CURRENT
                 if (it.startsWith(LocalFile.separatorChar)) it.substring(1) else it
             } else TODO()
 
-            val highlightsParams = highlightsParamsOrder.map { with(highlights.propertyByName(it)) { Item(name, value) } }.toTypedArray()
+            val highlightsParams = highlightsParamsOrder.map { (id, type) ->
+                with(highlights.propertyByName(id)) {
+                    if (this is QuickNamedHighlight.Val) {
+                        Item(type, name, base = base, valueList = value)
+                    } else if (this is QuickNamedString.Val) {
+                        Item(type, name, valueStr = value)
+                    } else TODO()
+                }
+            }.toTypedArray()
             val outFileRelativePath = "$thisFileParentRelativePath/$outFileName"
             val paramsNameAndOrder = listOf(
-                Item("localPathToCurrentFile", outFileRelativePath),
+                itemStr("localPathToCurrentFile", outFileRelativePath),
                 *highlightsParams,
-                *localPropertiesParamsOrder.map { Item(it, "") }.toTypedArray()
+                *localPropertiesParamsOrder.map { itemStr(it, "") }.toTypedArray()
             )
 
             val paramsClassStr = """@Suppress("PropertyName")
 class $paramsForUpdateLocalPropertiesName {
-${paramsNameAndOrder.sortedBy { it.name }.joinToString("\n") { "    val ${it.name} by ${objectName}.$quickNamedStringName()" }}
+${paramsNameAndOrder.sortedBy { it.name }.joinToString("\n") { "    val ${it.name} by ${objectName}.${it.typeNameRepresent}()" }}
 
     private val map = mapOf(
 ${paramsNameAndOrder.joinToString("\n") { "        \"${it.name}\" to ${it.name}," }}
     )
 
     fun propertyByName(propertyName: String) = map[propertyName]
-        ?: ${objectName}.${quickNamedStringName}.$quickNamedStringValName().apply { name = propertyName; value = "" }
+        ?: ${objectName}.${quickNamedStringName}.$quickNamedStringValName().apply { name = propertyName }
 }"""
 
             val highlightsParamsClassStr = """@Suppress("MemberVisibilityCanBePrivate")
 class $paramsOfHighlightsName {
-${highlightsParams.sortedBy { it.name }.joinToString("\n") { "    val ${it.name} by ${objectName}.$quickNamedStringName()" }}
+${highlightsParams.sortedBy { it.name }.joinToString("\n") { "    val ${it.name} by ${objectName}.${it.typeNameRepresent}()" }}
 
     private val map = mapOf(
 ${highlightsParams.joinToString("\n") { "        \"${it.name}\" to ${it.name}," }}
     )
 
     fun propertyByName(propertyName: String) = map[propertyName]
-        ?: ${objectName}.${quickNamedStringName}.$quickNamedStringValName().apply { name = propertyName; value = "" }
+        ?: ${objectName}.${quickNamedStringName}.$quickNamedStringValName().apply { name = propertyName }
 
-    fun forEach(action: (${objectName}.${quickNamedStringName}.$quickNamedStringValName) -> Unit): Unit = map.values.forEach(action)
+    fun forEach(action: (${objectName}.${quickNamedName}.$quickNamedValName) -> Unit): Unit = map.values.forEach(action)
 }"""
             val outStr = """$comment
 fun main(args: Array<String>) = ${objectName}.${updateHelperName}(args) {
-${paramsNameAndOrder.joinToString("\n") { "    ${it.name}..\"${it.value}\"" }}
+    ${objectName}.highlightsParamsOrder // ... to append 'highlightSrcN'
+${paramsNameAndOrder.joinToString("\n") { it.represent() }}
 }"""
 
             LocalFile(thisFileParentPath, "${paramsForUpdateLocalPropertiesName}.$fileNameExtension_Kt") update paramsClassStr
@@ -225,10 +308,13 @@ ${paramsNameAndOrder.joinToString("\n") { "    ${it.name}..\"${it.value}\"" }}
         normalizeHelper(devProject)
     }
 
-    private val highlightsParamsOrder = listOf(
-        "highlightSrc",
-        "highlightSrc1",
-        "highlightSrc2",
+    val highlightsParamsOrder = listOf(
+        "highlight" to QuickNamedType.highlight,
+        "plus1" to QuickNamedType.highlight,
+        "highlightSrc" to QuickNamedType.string,
+        "highlightSrc1" to QuickNamedType.string,
+        "highlightSrc2" to QuickNamedType.string,
+        "highlightSrc3" to QuickNamedType.string,
     )
     private const val paramPrefix = "params_"
     private val tmpFolderParamsOrder = arrayOf(
