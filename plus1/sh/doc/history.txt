@@ -1,0 +1,4 @@
+
+ssh-keygen -t ed25519 -a 107 -C 'one@id' -f ~/.ssh/id_ed25519_one
+
+PART_ID=07 ; sudo addgroup --gid 10$PART_ID way$PART_ID  &&  sudo adduser --disabled-password --gecos "" --uid 10$PART_ID --gid 10$PART_ID way$PART_ID
