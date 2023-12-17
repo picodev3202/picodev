@@ -328,5 +328,5 @@ ${paramsNameAndOrder.joinToString("\n") { it.represent() }}
     )
     private const val fileNameExtension_Kt = "kt"
     private const val comment = "//"
-    private const val outFileName = "fff.$fileNameExtension_Kt"
+    private const val outFileName = "eee.$fileNameExtension_Kt"
 }
