@@ -265,7 +265,7 @@ end
 function code.open_in_ide(args)
     code.link_out_place(args)
     code.lookupOneRunCmd()
-    io.output():write(code.TOOL_I_D_E .. " " .. code.path_join(code.DEV_PLACE_ROOT_FULL_PATH, code.DEV_PLACE_NAME))
+    io.output():write(code.TOOL_I_D_E .. " -Dnosplash=true " .. code.path_join(code.DEV_PLACE_ROOT_FULL_PATH, code.DEV_PLACE_NAME))
 end
 
 local debug = {}
