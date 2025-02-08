@@ -1,5 +1,6 @@
 object DefaultTypes {
 
+    @Suppress("SpellCheckingInspection")
     abstract class ItemType(
         val srcs: List<Pair<String, Pair<String, (String, String) -> String>>>,
         val withExample: Boolean,
@@ -8,7 +9,7 @@ object DefaultTypes {
 
     @Suppress("ClassName")
     object data {
-        val emptyExample = "" to fun(name: String, msg: String) = ""
+        val emptyExample = "" to fun(_: String, _: String) = ""
 
         val ktExample = "K.kt" to fun(name: String, msg: String) = """object $name {
     @JvmStatic

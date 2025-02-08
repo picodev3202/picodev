@@ -1,3 +1,4 @@
+@Suppress("SpellCheckingInspection")
 object IdeModulesXml : NodeItems() {
 
     fun modulesXml(modules: List<String>): String {
@@ -51,6 +52,7 @@ ${srcsUrls.joinToString("\n")}
 ${deps.joinToString("") { "$it\n" }} </component>
 </module>"""
 
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     val moduleXmlGeneral = fun(contentUrl: String, srcsUrls: List<String>, deps: List<String>) = """<?xml version="1.0" encoding="UTF-8"?>
 <module type="GENERAL_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
