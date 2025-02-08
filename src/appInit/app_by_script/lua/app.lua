@@ -3,6 +3,8 @@
 ----
 
 local code = {}
+code.ONE_RUN_CMD_SCRIPT = "build.gradle.kts"
+code.ONE_RUN_CMD_SETTINGS = "settings.gradle.kts"
 
 function code.log_info_permanent(...)
     print(...)
@@ -107,11 +109,12 @@ end
 
 function code.lookupOneRunCmd()
     code.ensureRunDir()
-    code.TOOL_I_D_E = "/opt/local/idea/bin/idea.sh"
+    code.TOOL_I_D_E = "/opt/local/idea/bin/idea"
     code.JAVA_HOME = "/opt/local/jdk"
     code.TOOL_ONE_RUN_CMD = "/opt/local/gradle/bin/gradle"
     code.TOOL_ONE_RUN_HOME = code.path_real(code.RUN_DIR, "one_run_home")
     code.TOOL_ONE_RUN_DEFAULT_ARGS = "--gradle-user-home=" .. code.TOOL_ONE_RUN_HOME .. " --offline"
+    -- code.TOOL_ONE_RUN_DEFAULT_ARGS = "--gradle-user-home=" .. code.TOOL_ONE_RUN_HOME .. " --offline --stacktrace"
 end
 
 function code.ensureOneRunCmd()
@@ -121,29 +124,31 @@ function code.ensureOneRunCmd()
     end
     code.mkdirs(code.TOOL_ONE_RUN_HOME)
     os.execute("touch " .. code.TOOL_ONE_RUN_HOME .. "/file_from_app_by_scrip")
-    local generatedJarsDir = "/opt/local/generated-jars"
-    local generatedJarsVersionFile = code.path_join(generatedJarsDir, "version")
-    if vim.fn.isdirectory(generatedJarsDir) == 1 then
+    local gradleGeneratedDir = "/opt/local/gradle_generated/ready"
+    local generatedJarsVersionFile = code.path_join(gradleGeneratedDir, "version")
+    if vim.fn.isdirectory(gradleGeneratedDir) == 1 then
         local version = vim.fn.readfile(generatedJarsVersionFile)[1]
         local toolOneRunHomeDir = code.path_join(code.TOOL_ONE_RUN_HOME, "caches", version, "generated-gradle-jars/")
         if vim.fn.isdirectory(toolOneRunHomeDir) ~= 1 then
-            local copyCmd = "cp " .. generatedJarsDir .. "/*.jar " .. toolOneRunHomeDir
+            local copyCmd = "cp " .. gradleGeneratedDir .. "/*.jar " .. toolOneRunHomeDir
             code.log_info("copy generated-jars ", version, " by: })> " .. copyCmd .. " <({")
             code.mkdirs(toolOneRunHomeDir)
             os.execute(copyCmd)
         end
     else
-        code.mkdir(generatedJarsDir)
-        local appName = 'Gradle'
-        local appVersion = code.read_process_output(code.getOneRunCmd() .. " --version | grep " .. appName)
-        appVersion = appVersion:gsub(appName, "")
-        appVersion = code.str_trim(appVersion)
+        local oneRunHomePlus = code.TOOL_ONE_RUN_HOME .. "_plus"
+        if vim.fn.isdirectory(oneRunHomePlus) ~= 1 then
+            code.mkdirs(oneRunHomePlus)
+            vim.fn.writefile({ "" }, code.path_join(oneRunHomePlus, code.ONE_RUN_CMD_SETTINGS))
+            vim.fn.writefile({ gradleGeneratedDir }, code.path_join(oneRunHomePlus, "arg01.txt"))
 
-        local toolOneRunHomeDir = code.path_join(code.TOOL_ONE_RUN_HOME, "caches", appVersion, "generated-gradle-jars/")
-        vim.fn.writefile({ appVersion }, generatedJarsVersionFile)
-        local copyCmd = "cp " .. toolOneRunHomeDir .. "/*.jar " .. generatedJarsDir
-        code.log_info("copy generated-jars ", appVersion, " by: })> " .. copyCmd .. " <({")
-        os.execute(copyCmd)
+            local scriptId = "prepare_cache_of_gradle_generated_jar_task"
+            code.writeScriptTemplate(scriptId, code.path_join(oneRunHomePlus, code.ONE_RUN_CMD_SCRIPT))
+
+            local cmd = "cd " .. oneRunHomePlus .. " && " .. code.getOneRunCmd() .. " " .. scriptId .. " > " .. code.path_join(oneRunHomePlus, "out.txt")
+            os.execute(cmd)
+            code.log_info("   end command })> " .. cmd .. " <({")
+        end
     end
 end
 
@@ -164,8 +169,18 @@ function code.echoArgs(args)
     io.output():write(vim.inspect(args), "\n")
 end
 
-function code.lookupDevPlace()
+function code.lookupDevPlaceLite()
     code.PLACE_OF_SCRIPT_FULL_PATH = vim.fs.dirname(vim.fs.dirname(arg[0]))
+end
+
+function code.writeScriptTemplate(scriptTemplateName, toFile)
+    code.lookupDevPlaceLite()
+    local scriptTemplateFile = code.path_join(code.PLACE_OF_SCRIPT_FULL_PATH, "../plus/scriptTemplate/kt", scriptTemplateName .. ".kt")
+    vim.fn.writefile(code.shift_(10, vim.fn.readfile(scriptTemplateFile)), toFile)
+end
+
+function code.lookupDevPlace()
+    code.lookupDevPlaceLite()
     code.DEV_PLACE_ROOT_FULL_PATH = code.path_real(code.PLACE_OF_SCRIPT_FULL_PATH, "../../..")
     code.DEV_PLACE_NAME = vim.fn.readfile(code.DEV_PLACE_ROOT_FULL_PATH .. "/.internal/place_config_desc")[1]
     code.DEV_PLACE_GEN_DIR = code.path_join(code.DEV_PLACE_ROOT_FULL_PATH, "wwgen")
@@ -181,7 +196,7 @@ function code.ensure_app_by_script_place()
     code.APP_BY_SCRIPT_NAME = vim.fs.basename(code.path_real(code.PLACE_OF_SCRIPT_FULL_PATH, ".."))
     code.APP_BY_SCRIPT__DIR = code.path_join(code.RUN_PLACE_APP__TMP, code.APP_BY_SCRIPT_NAME)
     code.APP_BY_SCRIPT__DIR_LINK = code.path_join(code.DEV_PLACE_GEN_LNK, "run_" .. code.APP_BY_SCRIPT_NAME)
-    code.APP_BY_SCRIPT_TOOL_FILE = code.path_join(code.APP_BY_SCRIPT__DIR, "build.gradle.kts")
+    code.APP_BY_SCRIPT_TOOL_FILE = code.path_join(code.APP_BY_SCRIPT__DIR, code.ONE_RUN_CMD_SCRIPT)
 
     if vim.fn.isdirectory(code.DEV_PLACE_GEN_LNK) ~= 1 then
         code.log_info("mk ", code.DEV_PLACE_GEN_LNK)
@@ -195,7 +210,7 @@ function code.ensure_app_by_script_place()
     local fileMarkerContent = code.DEV_PLACE_GEN_DIR
     vim.fn.writefile({ fileMarkerContent }, code.path_join(code.RUN_PLACE_APP__TMP, "file_from_app_by_script"))
     vim.fn.writefile({ fileMarkerContent }, code.path_join(code.APP_BY_SCRIPT__DIR, fileMarker))
-    vim.fn.writefile({ "" }, code.path_join(code.APP_BY_SCRIPT__DIR, "settings.gradle.kts"))
+    vim.fn.writefile({ "" }, code.path_join(code.APP_BY_SCRIPT__DIR, code.ONE_RUN_CMD_SETTINGS))
     -- vim.fn.writefile({ "" }, code.APP_BY_SCRIPT_TOOL_FILE)
     local appDirLink = code.path_join(code.APP_BY_SCRIPT__DIR_LINK, fileMarker)
     code.log_info("appDirLink", appDirLink, "\n")
@@ -219,8 +234,7 @@ function code.echoAppsByScriptStartCmd(args)
     code.log_info("apps_list:", vim.inspect(apps_list), "\n")
     vim.fn.writefile(apps_list, code.path_join(code.APP_BY_SCRIPT__DIR, "apps_list.txt"))
     local scriptTemplateName = vim.fs.basename(code.PLACE_OF_SCRIPT_FULL_PATH)
-    local scriptTemplateFile = code.path_join(code.PLACE_OF_SCRIPT_FULL_PATH, "../plus/scriptTemplate/kt", scriptTemplateName .. ".kt")
-    vim.fn.writefile(code.shift_(10, vim.fn.readfile(scriptTemplateFile)), code.APP_BY_SCRIPT_TOOL_FILE)
+    code.writeScriptTemplate(scriptTemplateName, code.APP_BY_SCRIPT_TOOL_FILE)
     io.output():write("cd " .. code.APP_BY_SCRIPT__DIR_LINK .. " && ")
     code.echoOneRunCmd(args)
 end

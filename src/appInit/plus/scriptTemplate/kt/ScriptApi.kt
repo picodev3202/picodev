@@ -1,4 +1,10 @@
 object ScriptApi {
+
+    interface Gradle {
+        val gradleVersion: String
+        val gradleUserHomeDir: java.io.File
+    }
+
     interface Task {
         val name: String
         val path: String
@@ -12,6 +18,7 @@ object ScriptApi {
     }
 
     interface Project {
+        val gradle: Gradle
         fun file(path: String): java.io.File = java.io.File(path)
         val tasks: Tasks
         fun Project.buildscript(block: ApplyApi.() -> Unit)
