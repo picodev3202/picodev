@@ -11,8 +11,7 @@ interface LocalPlace {
 
     companion object {
         private const val DEBUG_LOGS = true
-        private fun debugLogs(str: String) = if (DEBUG_LOGS) println(str) else Unit
-
+        private inline fun debugLogs(getText: () -> String) = if (DEBUG_LOGS) println(getText()) else Unit
         val empty = Impl(LocalFile(""))
         val separatorChar = LocalFile.separatorChar
         fun of(file: LocalFile) = Impl(file)
@@ -29,29 +28,22 @@ interface LocalPlace {
 
     fun exists() = !isEmpty && file.exists()
     val isEmpty get() = this == empty
-    val parent: LocalPlace
-        get() {
-            if (isEmpty) return empty
-            val parentFile = file.parentFile
-            if (null == parentFile) return empty
-            return Impl(parentFile)
-            return file.parentFile?.let { Impl(it) } ?: empty
-        }
+    val parent: LocalPlace get() = takeIf { it.exists() }?.file?.parentFile?.let { Impl(it) } ?: empty
 
-    /*@Suppress("NOTHING_TO_INLINE")*/
+    //@Suppress("NOTHING_TO_INLINE")
     /*inline*/ infix fun /*LocalPlace.*/update(text: String): Unit = if (!file.exists()) create { text } else if (file.readText() != text) {
         file.parentFile.mkdirs()
         file.writeText(text)
-        debugLogs("update:           file:///${file.absolutePath}")
-    } else debugLogs("content the same: file:///${file.absolutePath}")
+        debugLogs { "update:           file:///${file.absolutePath}" }
+    } else debugLogs { "content the same: file:///${file.absolutePath}" }
 
     /*inline*/ infix fun /*LocalPlace.*/create(getText: () -> String): Unit = if (!file.exists()) {
         val str = getText()
         if (str.isNotEmpty()) {
             file.parentFile.mkdirs()
             file.writeText(str)
-            debugLogs("create:           file:///${file.absolutePath}")
-        } else debugLogs("nothing to write: file:///${file.absolutePath}")
-    } else debugLogs("already exists:   file:///${file.absolutePath}")
+            debugLogs { "create:           file:///${file.absolutePath}" }
+        } else debugLogs { "nothing to write: file:///${file.absolutePath}" }
+    } else debugLogs { "already exists:   file:///${file.absolutePath}" }
 
 }
