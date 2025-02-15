@@ -1,17 +1,17 @@
 @Suppress("ConstPropertyName")
-class RootPlace(override val place: LocalPlace) : LocalPlace.AbstractLocalPlace() {
+class RootStore(override val place: LocalPlace) : LocalPlace.AbstractLocalPlace() {
     companion object {
         const val defaultLookupMarker = DevProject.mainDescLocalPath
 
-        fun lookupFromCurrentDir(lookupMarker: String = defaultLookupMarker): RootPlace {
+        fun lookupFromCurrentDir(lookupMarker: String = defaultLookupMarker): RootStore {
             val currentDir = LocalPlace.of(LocalPlace.localFile("").absoluteFile)
             return lookupToParentOf(currentDir, lookupMarker)
         }
 
-        fun lookupToParentOf(place: LocalPlace, lookupMarker: String = defaultLookupMarker): RootPlace {
+        fun lookupToParentOf(place: LocalPlace, lookupMarker: String = defaultLookupMarker): RootStore {
             val rootPlace = lookupToParentByName(place, lookupMarker)
             if (place.isEmpty)  TODO()
-            return RootPlace(rootPlace)
+            return RootStore(rootPlace)
         }
 
         private fun lookupToParentByName(currentPlace: LocalPlace, lookupName: String): LocalPlace {

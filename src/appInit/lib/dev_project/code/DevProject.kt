@@ -1,5 +1,5 @@
 @Suppress("ConstPropertyName", "SpellCheckingInspection")
-class DevProject(val rootStore: RootPlace) {
+class DevProject(val rootStore: RootStore) {
     companion object {
         const val mainDescLocalPath = ".internal/place_config_desc"
         private const val wwgen = "wwgen"
@@ -8,12 +8,12 @@ class DevProject(val rootStore: RootPlace) {
         const val genTmpPlace = "$wwgen/tmp"
 
         fun lookupFromCurrentDir(): DevProject {
-            return DevProject(RootPlace.lookupFromCurrentDir(mainDescLocalPath))
+            return DevProject(RootStore.lookupFromCurrentDir(mainDescLocalPath))
         }
 
         fun lookupBy(args: Array<String>): DevProject {
             return args.firstOrNull()?.let { LocalPlace.of(it) }?.takeIf { it.exists() }
-                ?.let { DevProject(RootPlace.lookupToParentOf(it)) }
+                ?.let { DevProject(RootStore.lookupToParentOf(it)) }
                 ?: lookupFromCurrentDir()
         }
     }

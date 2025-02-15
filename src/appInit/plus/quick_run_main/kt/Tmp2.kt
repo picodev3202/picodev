@@ -6,7 +6,7 @@ object Tmp2 {
         println("Tmp2.main ${devProject.rootStore.file}")
         println("Tmp2.main ${devProject.rootStore.file("..")}")
 
-        val newDevProject = DevProject(RootPlace(devProject.rootStore.place("../pico_dev_clean1")))
+        val newDevProject = DevProject(RootStore(devProject.rootStore.place("../pico_dev_clean1")))
         val newName = "PiCoDevClean1"
         println("Tmp2.main ${newDevProject.rootStore.file}")
         println("Tmp2.main ${newDevProject.rootStore.file(DevProject.mainDescLocalPath)}")
