@@ -2,7 +2,7 @@ object QuickRun {
     interface Main {
         val objectName get() = this::class.java.name
         val logTagName get() = objectName
-        fun main(thisFile: LocalFile, args: List<String>)
+        fun main(thisFile: LocalPlace, args: List<String>)
     }
 
     val fileNameExtension_Kt = "kt"
@@ -12,9 +12,7 @@ object QuickRun {
         val params = QuickRunParams()
         params.configure()
 
-        val devProject = args.firstOrNull()?.let { LocalFile(it) }
-            ?.let { if (it.exists()) DevProject(RootPlace.lookupToParentOf(it)) else null }
-            ?: DevProject.lookupFromCurrentDir()
+        val devProject = DevProject.lookupBy(args)
 
         val objectName = mainObject::class.java.name
         val expectedFileName = "${objectName}.$fileNameExtension_Kt"
@@ -22,7 +20,7 @@ object QuickRun {
         val paramsValueLocalPathToCurrentFile = params.localPathToCurrentSourceFile.value
 
         //@formatter:on
-        val foundFiles = devProject.srcPlace.walk().onEnter {
+        val foundFiles = devProject.src.file.walk().onEnter {
             when (it.name) {
                 "tmp", "out", "build", ".idea", ".git" -> {
                     System.err.println("skip walk: $it"); false
@@ -33,13 +31,13 @@ object QuickRun {
         }.filter { it.isFile && expectedFileName == it.name }.toList()
 
         if (foundFiles.isEmpty()) {
-            TODO("file by name='$expectedFileName' not fount in '${devProject.rootPlace}'")
+            TODO("file by name='$expectedFileName' not fount in '${devProject.rootStore}'")
         } else if (foundFiles.size == 1) {
             val thisFile = foundFiles[0]
-            mainObject.main(thisFile, args.toList())
+            mainObject.main(LocalPlace.of(thisFile), args.toList())
         } else {
             var allFilesValid = true
-            val srcPlacePath = devProject.srcPlace.absolutePath
+            val srcPlacePath = devProject.src.path
             val paramName = params.localPathToCurrentSourceFile.name
             for (file in foundFiles) {
                 //System.err.println("QuickRunObject try to find file $file")
@@ -47,7 +45,7 @@ object QuickRun {
                 var contentWithValidParam = ""
                 val foundParamList = mutableListOf<String>()
                 val filePath = file.absolutePath ?: TODO()
-                val fileRelativePath = if (filePath.startsWith(srcPlacePath)) filePath.substring(srcPlacePath.length).trim(LocalFile.separatorChar)
+                val fileRelativePath = if (filePath.startsWith(srcPlacePath)) filePath.substring(srcPlacePath.length).trim(LocalPlace.separatorChar)
                 else TODO(" Found file not in 'src place' $srcPlacePath")
 
                 for (line in originalContent.lines()) {
@@ -80,7 +78,7 @@ object QuickRun {
                 }
             }
             if (allFilesValid && paramsValueLocalPathToCurrentFile.isNotEmpty()) {
-                val looksLikeExpectedFile = LocalFile(devProject.srcPlace, paramsValueLocalPathToCurrentFile)
+                val looksLikeExpectedFile = devProject.src.place(paramsValueLocalPathToCurrentFile)
                 if (looksLikeExpectedFile.exists() && looksLikeExpectedFile.name == expectedFileName) {
                     mainObject.main(looksLikeExpectedFile, args.toList())
                     return

@@ -1,17 +1,26 @@
-object Tmp {
+object Tmp1 {
     @JvmStatic
     fun main(args: Array<String>) {
-        val devProject = args.firstOrNull()?.let { LocalFile(it) }?.takeIf { it.exists() }
-            ?.run { DevProject(RootPlace.lookupToParentOf(absoluteFile)) }
-            ?: DevProject.lookupFromCurrentDir()
+        val devProject = DevProject.lookupBy(args)
 
         val resStr = "ls -l".exec()
-        println("Tmp.main $resStr")
+        println("Tmp1.main $resStr")
 
         val resStr2 = "ls -l".exec {
-            directory(devProject.srcPlace)
+            directory(devProject.src.file)
         }
-        println("Tmp.main $resStr2")
+        println("Tmp1.main $resStr2")
+
+        devProject.genTmp.file.let {
+            if (it.exists()) {
+                val resStr3 = "ls -l".exec {
+                    directory(it)
+                }
+                println("Tmp1.main $resStr3")
+            }
+        }
+
+        devProject.genTmp.place("tmp1.txt") update " "
     }
 
     fun String.exec() = exec { }

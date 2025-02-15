@@ -1,43 +1,38 @@
-class DevProject(val rootPlace: RootPlace) {
+@Suppress("ConstPropertyName", "SpellCheckingInspection")
+class DevProject(val rootStore: RootPlace) {
     companion object {
         const val mainDescLocalPath = ".internal/place_config_desc"
         private const val wwgen = "wwgen"
         const val localPropertiesPlace = "$wwgen/local_properties_data"
-        const val srcPlaceStr = "src"
+        private const val srcPlace = "src"
         const val genTmpPlace = "$wwgen/tmp"
 
         fun lookupFromCurrentDir(): DevProject {
             return DevProject(RootPlace.lookupFromCurrentDir(mainDescLocalPath))
         }
+
+        fun lookupBy(args: Array<String>): DevProject {
+            return args.firstOrNull()?.let { LocalPlace.of(it) }?.takeIf { it.exists() }
+                ?.let { DevProject(RootPlace.lookupToParentOf(it)) }
+                ?: lookupFromCurrentDir()
+        }
     }
 
-    class ExtPlace(
-        val ideScripting: LocalFile,
-        val tmpDirQuick: LocalFile,
-        val tmpDirBig: LocalFile,
-    )
+    class ExtPlace(val localProperties: LocalProperties) {
+        val ideScripting by lazy { LocalPlace.of(localProperties.pathOfIdeScripting) }
+        val tmpDirQuick by lazy { LocalPlace.of(localProperties.pathOfTmpDirQuick) }
+        val tmpDirBig by lazy { LocalPlace.of(localProperties.pathOfTmpDirBig) }
+    }
 
-    val localProperties by lazy { LocalProperties(rootPlace.place(localPropertiesPlace)) }
+    val extPlace by lazy { ExtPlace(localProperties) }
+    val localProperties by lazy { LocalProperties(rootStore.place(localPropertiesPlace)) }
 
     val name: String by lazy {
-        val prjDesc = rootPlace.file(mainDescLocalPath).run { if (exists()) readText() else "" }
+        val prjDesc = rootStore.file(mainDescLocalPath).run { if (exists()) readText() else "" }
         val prjName = prjDesc.let { if (it.isNotBlank()) it.lines()[0] else "" }.ifBlank { TODO() }
         prjName
     }
 
-    val srcPlace: LocalFile by lazy { rootPlace.file(srcPlaceStr) }
-
-    fun fileInRootPlace(path: String): LocalFile = rootPlace.file(path)
-    fun fileInSrcPlace(path: String): LocalFile = LocalFile(srcPlace, path).absoluteFile
-    fun fileInGenTmpPlace(path: String): LocalFile = LocalFile(rootPlace.file(genTmpPlace), path).absoluteFile
-    fun fileInTmpDirBig(path: String): LocalFile = LocalFile(extPlace.tmpDirBig, path).absoluteFile
-    fun fileInTmpDirQuick(path: String): LocalFile = LocalFile(extPlace.tmpDirQuick, path).absoluteFile
-
-    val extPlace: ExtPlace by lazy {
-        ExtPlace(
-            LocalFile(localProperties.pathOfIdeScripting),
-            LocalFile(localProperties.pathOfTmpDirQuick),
-            LocalFile(localProperties.pathOfTmpDirBig),
-        )
-    }
+    val src by lazy { LocalPlace.of(rootStore.file(srcPlace)) }
+    val genTmp by lazy { LocalPlace.of(rootStore.file(genTmpPlace)) }
 }

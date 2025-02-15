@@ -1,28 +1,23 @@
-@Suppress("MemberVisibilityCanBePrivate", "unused")
-class RootPlace(val file: LocalFile) {
+@Suppress("ConstPropertyName")
+class RootPlace(override val place: LocalPlace) : LocalPlace.AbstractLocalPlace() {
     companion object {
         const val defaultLookupMarker = DevProject.mainDescLocalPath
 
         fun lookupFromCurrentDir(lookupMarker: String = defaultLookupMarker): RootPlace {
-            val currentDir = LocalFile("")
-            return lookupToParentOf(currentDir.absoluteFile, lookupMarker)
+            val currentDir = LocalPlace.of(LocalPlace.localFile("").absoluteFile)
+            return lookupToParentOf(currentDir, lookupMarker)
         }
 
-        fun lookupToParentOf(place: LocalFile, lookupMarker: String = defaultLookupMarker): RootPlace {
+        fun lookupToParentOf(place: LocalPlace, lookupMarker: String = defaultLookupMarker): RootPlace {
             val rootPlace = lookupToParentByName(place, lookupMarker)
-                ?: TODO()
+            if (place.isEmpty)  TODO()
             return RootPlace(rootPlace)
         }
 
-        private fun lookupToParentByName(file: LocalFile?, lookupName: String): LocalFile? {
-            if (file == null) return null
-            if (file.isDirectory && LocalFile(file, lookupName).exists()) return file
-            return lookupToParentByName(file.absoluteFile.parentFile, lookupName)
+        private fun lookupToParentByName(currentPlace: LocalPlace, lookupName: String): LocalPlace {
+            if (currentPlace.isEmpty) return LocalPlace.empty
+            if (currentPlace.file.isDirectory && currentPlace.place(lookupName).exists()) return currentPlace
+            return lookupToParentByName(currentPlace.parent, lookupName)
         }
     }
-
-    fun file(path: String): LocalFile = LocalFile(file, path).absoluteFile
-    fun place(path: String): LocalPlace = LocalPlace.of(file).place(path)
-
-    override fun toString(): String = file.absolutePath
 }

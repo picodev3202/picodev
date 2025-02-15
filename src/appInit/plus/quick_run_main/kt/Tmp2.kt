@@ -1,32 +1,30 @@
 object Tmp2 {
     @JvmStatic
     fun main(args: Array<String>) {
-        val devProject = args.firstOrNull()?.let { LocalFile(it) }?.takeIf { it.exists() }
-            ?.run { DevProject(RootPlace.lookupToParentOf(absoluteFile)) }
-            ?: DevProject.lookupFromCurrentDir()
+        val devProject = DevProject.lookupBy(args)
 
-        println("Tmp2.main ${devProject.rootPlace.file}")
-        println("Tmp2.main ${devProject.rootPlace.file("..")}")
+        println("Tmp2.main ${devProject.rootStore.file}")
+        println("Tmp2.main ${devProject.rootStore.file("..")}")
 
-        val newDevProject = DevProject(RootPlace(devProject.rootPlace.file("../pico_dev_clean")))
-        val newName = "PiCoDevClean"
-        println("Tmp2.main ${newDevProject.rootPlace.file}")
-        println("Tmp2.main ${newDevProject.fileInRootPlace(DevProject.mainDescLocalPath)}")
+        val newDevProject = DevProject(RootPlace(devProject.rootStore.place("../pico_dev_clean1")))
+        val newName = "PiCoDevClean1"
+        println("Tmp2.main ${newDevProject.rootStore.file}")
+        println("Tmp2.main ${newDevProject.rootStore.file(DevProject.mainDescLocalPath)}")
 
-        newDevProject.fileInRootPlace(newName).mkdirs()
-        devProject.fileInRootPlace(DevProject.mainDescLocalPath)
+        newDevProject.rootStore.file(newName).mkdirs()
+        devProject.rootStore.file(DevProject.mainDescLocalPath)
             .parentFile.copyRecursively(
-                newDevProject.fileInRootPlace(DevProject.mainDescLocalPath)
+                newDevProject.rootStore.file(DevProject.mainDescLocalPath)
                     .parentFile
             )
-        newDevProject.fileInRootPlace(DevProject.mainDescLocalPath).writeText(newName)
+        newDevProject.rootStore.file(DevProject.mainDescLocalPath).writeText(newName)
 
-        devProject.fileInRootPlace(devProject.name).copyRecursively(newDevProject.fileInRootPlace(newName))
+        devProject.rootStore.file(devProject.name).copyRecursively(newDevProject.rootStore.file(newName))
 
         listOf(
             "appInit",
         ).forEach {
-            devProject.fileInSrcPlace(it).copyRecursively(newDevProject.fileInSrcPlace(it))
+            devProject.src.file(it).copyRecursively(newDevProject.src.file(it))
         }
     }
 }

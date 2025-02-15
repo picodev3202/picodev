@@ -1,9 +1,9 @@
 class DebugQuickExample : QuickRun.Main {
-    override fun main(thisFile: LocalFile, args: List<String>) {
+    override fun main(thisFile: LocalPlace, args: List<String>) {
         println("$logTagName.main $thisFile")
 
         val pref01 = "code."
-        val srcFile = LocalFile(thisFile.parentFile.parentFile.parentFile.parentFile, "app_by_script/lua/app.lua")
+        val srcFile = thisFile.parent.parent.parent.parent.takeIf { it.exists() }?.file("app_by_script/lua/app.lua") ?: TODO()
         println("srcFile : $srcFile")
         val str = srcFile.readText()
         val list = mutableListOf<String>()

@@ -1,5 +1,5 @@
 class DebugQuickRunMainClass : QuickRun.Main {
-    override fun main(thisFile: LocalFile, args: List<String>) {
+    override fun main(thisFile: LocalPlace, args: List<String>) {
         println("DebugClass.main $thisFile")
     }
 }

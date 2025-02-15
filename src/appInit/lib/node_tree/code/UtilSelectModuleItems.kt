@@ -16,7 +16,7 @@ object UtilSelectModuleItems : NodeItems() {
 
         private val map = mutableMapOf<NodeItemsDesc.ItemContent, In>()
         private val items = mutableListOf<In>()
-        private val flatMap = mutableMapOf<String, WithDetectedDependency>()
+        private val flatMapOfDependency = mutableMapOf<String, WithDetectedDependency>()
 
         fun put(module: NodeItemsDesc.ItemContent, path: List<String>, fullPath: List<String>) =
             put(In(NodePath(path), module, NodePath(fullPath)))
@@ -32,7 +32,7 @@ object UtilSelectModuleItems : NodeItems() {
 
         private fun fillDepModuleNode(all: MutableSet<NodePath>, childrenIdx: List<NodePath>) {
             for (c in childrenIdx) {
-                val item = flatMap[c.fs] ?: TODO("Error 4 ${c.fs}")
+                val item = flatMapOfDependency[c.fs] ?: TODO("Error 4 ${c.fs}")
                 all.add(item.itemIn.path)
                 fillDepModuleNode(all, item.dependency)
             }
@@ -44,7 +44,7 @@ object UtilSelectModuleItems : NodeItems() {
                 val libraries = mutableListOf<LibraryContent>()
                 itemIn.itemContent.dependency.forEach { if (it is LibraryContent) libraries.add(it) else dependency.add(get(it).path) }
                 WithDetectedDependency(itemIn, dependency, libraries)
-                    .also { flatMap[itemIn.path.fs] = it }
+                    .also { flatMapOfDependency[itemIn.path.fs] = it }
             }
 
             val itemsWithDetectedAllDependency = itemsWithDetectedDependency.map { item ->

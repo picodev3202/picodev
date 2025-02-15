@@ -59,13 +59,9 @@ object appInit : NodeItems() {
         val utilModulesXml = IdeModulesXml
         val util = UtilSelectModuleItems
 
-        val devProject = args.firstOrNull()?.let { LocalFile(it) }?.takeIf { it.exists() }
-            ?.run { DevProject(RootPlace.lookupToParentOf(absoluteFile)) }
-            ?: DevProject.lookupFromCurrentDir()
-
-        val placeSrcStr = DevProject.srcPlaceStr
-        val place = devProject.rootPlace.file
-        val placeSrc = devProject.srcPlace
+        val devProject = DevProject.lookupBy(args)
+        val place = devProject.rootStore.file
+        val placeSrc = devProject.src
         val prjName = devProject.name
 
         println("Init.main place=$place projectName=$prjName")
@@ -77,10 +73,10 @@ object appInit : NodeItems() {
             val moduleItemType = item.module.type
             println("Init.main ${item.path} ${moduleItemType is DefaultTypes.ItemType}")
             if (moduleItemType is DefaultTypes.ItemType) {
-                modulesRelativePath.add(utilModulesXml.moduleGeneric(prjName, place, placeSrcStr, item.path, moduleItemType, item.allDependency, item.libraries))
-                val moduleDir = LocalFile(placeSrc, item.path.fs).apply { mkdirs() }
+                modulesRelativePath.add(utilModulesXml.moduleGeneric(prjName, place, placeSrc.name, item.path, moduleItemType, item.allDependency, item.libraries))
+                val moduleDir = placeSrc.file(item.path.fs).apply { mkdirs() }
                 item.copyContentOf?.run {
-                    val from = LocalFile(placeSrc, fs)
+                    val from = placeSrc.file(fs)
                     println("Init.main  copy from : $from to : $moduleDir")
                     from.walk().onEnter {file -> when (file.name) {//@formatter:off
                         ".gradle", "build" -> {                  file.deleteIfExist; false}
