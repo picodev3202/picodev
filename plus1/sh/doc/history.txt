@@ -2,3 +2,8 @@
 ssh-keygen -t ed25519 -a 107 -C 'one@id' -f ~/.ssh/id_ed25519_one
 
 PART_ID=07 ; sudo addgroup --gid 10$PART_ID way$PART_ID  &&  sudo adduser --disabled-password --gecos "" --uid 10$PART_ID --gid 10$PART_ID way$PART_ID
+
+SRC_PLACE=~/tmp/  SRC_URL=https://github.com/neovim/neovim  SRC_NAME=$(basename $SRC_URL)  SRC_VERSION=v0.10.4; \
+    cd $SRC_PLACE && git clone $SRC_URL --depth=1 --single-branch --branch=$SRC_VERSION ${SRC_NAME}_$SRC_VERSION && \
+    cd $SRC_PLACE${SRC_NAME}_$SRC_VERSION/  &&  git switch -c $SRC_VERSION && \
+    time make CMAKE_BUILD_TYPE=Release      &&  cd build  &&  ./bin/nvim --version  &&  time cpack -G DEB  #  && sudo dpkg -i nvim-linux-x86_64.deb
