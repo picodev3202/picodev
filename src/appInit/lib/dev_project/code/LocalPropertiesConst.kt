@@ -1,4 +1,5 @@
 interface LocalPropertiesConst {
+    @Suppress("ConstPropertyName")
     companion object : LocalPropertiesConst {
         override val conf_place by lazy { Companion }
 

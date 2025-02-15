@@ -17,7 +17,7 @@ class DevProject(val rootPlace: RootPlace) {
         val tmpDirBig: LocalFile,
     )
 
-    val localProperties by lazy { LocalProperties(rootPlace.file(localPropertiesPlace)) }
+    val localProperties by lazy { LocalProperties(rootPlace.place(localPropertiesPlace)) }
 
     val name: String by lazy {
         val prjDesc = rootPlace.file(mainDescLocalPath).run { if (exists()) readText() else "" }

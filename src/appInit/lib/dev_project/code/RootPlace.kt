@@ -22,6 +22,7 @@ class RootPlace(val file: LocalFile) {
     }
 
     fun file(path: String): LocalFile = LocalFile(file, path).absoluteFile
+    fun place(path: String): LocalPlace = LocalPlace.of(file).place(path)
 
     override fun toString(): String = file.absolutePath
 }
