@@ -34,7 +34,7 @@ object appInit : NodeItems() {
     }
 
     object library {
-        val jSerialComm_2_9_2 = _Library("jSerialComm-2.9.2")
+        val jSerialComm_2_9_2 = _Library("jSerialComm-2.9.2") //https://github.com/Fazecast/jSerialComm/releases/tag/v2.11.0
     }
 
     object src : SrcPlace() {

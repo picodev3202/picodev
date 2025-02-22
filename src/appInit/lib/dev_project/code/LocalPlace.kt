@@ -22,9 +22,10 @@ interface LocalPlace {
     val name: String get() = file.name
     val file: LocalFile
     fun file(relativePath: String): LocalFile = LocalFile(file, relativePath).absoluteFile
-    val path: String get() = file.absolutePath
+    val path: String get() = file.absolutePath ?: TODO()
     fun path(relativePath: String): String = file(relativePath).absolutePath
     fun place(relativePath: String): LocalPlace = of(file(relativePath))
+    fun readText(): String = run { if (exists()) file.readText() else "" }
 
     fun exists() = !isEmpty && file.exists()
     val isEmpty get() = this == empty

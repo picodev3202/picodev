@@ -7,5 +7,5 @@ class QuickNamedString {
     }
 
     private val _val = Val()
-    operator fun getValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>) = _val.apply { name = property.name }
+    operator fun getValue(@Suppress("unused") thisRef: Any?, property: kotlin.reflect.KProperty<*>) = _val.apply { name = property.name }
 }

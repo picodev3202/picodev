@@ -1,6 +1,7 @@
 class DebugQuickRunMainClass : QuickRun.Main {
     override fun main(thisFile: LocalPlace, args: List<String>) {
-        println("DebugClass.main $thisFile")
+        println("$logTagName.main $thisFile")
+        println("$logTagName.main $objectName")
     }
 }
 

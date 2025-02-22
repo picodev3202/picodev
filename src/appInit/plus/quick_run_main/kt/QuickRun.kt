@@ -1,12 +1,20 @@
 object QuickRun {
     interface Main {
-        val objectName get() = this::class.java.name
-        val logTagName get() = objectName
+        val objectName: String get() = this::class.java.name
+        val logTagName: String get() = objectName
         fun main(thisFile: LocalPlace, args: List<String>)
     }
 
-    val fileNameExtension_Kt = "kt"
-    val comment = "//"
+    @Suppress("ConstPropertyName")
+    const val fileNameExtension_Kt = "kt"
+
+    @Suppress("ConstPropertyName")
+    const val comment = "//"
+
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun Main.main(devProject: DevProject, thisFile: LocalPlace, args: Array<String>) {
+        main(thisFile, args.toList())
+    }
 
     fun lookupSrcFileByClassNameAndRun(mainObject: Main, args: Array<String>, configure: QuickRunParams.() -> Unit) {
         val params = QuickRunParams()
@@ -14,7 +22,13 @@ object QuickRun {
 
         val devProject = DevProject.lookupBy(args)
 
-        val objectName = mainObject::class.java.name
+        val objectName = mainObject::class.java.name.let {
+            val char = "$"
+            if (it.contains(char)) {
+                return@let it.split(char)[0]
+            }
+            return@let it
+        }
         val expectedFileName = "${objectName}.$fileNameExtension_Kt"
 
         val paramsValueLocalPathToCurrentFile = params.localPathToCurrentSourceFile.value
@@ -34,7 +48,7 @@ object QuickRun {
             TODO("file by name='$expectedFileName' not fount in '${devProject.rootStore}'")
         } else if (foundFiles.size == 1) {
             val thisFile = foundFiles[0]
-            mainObject.main(LocalPlace.of(thisFile), args.toList())
+            mainObject.main(devProject, LocalPlace.of(thisFile), args)
         } else {
             var allFilesValid = true
             val srcPlacePath = devProject.src.path
@@ -80,7 +94,7 @@ object QuickRun {
             if (allFilesValid && paramsValueLocalPathToCurrentFile.isNotEmpty()) {
                 val looksLikeExpectedFile = devProject.src.place(paramsValueLocalPathToCurrentFile)
                 if (looksLikeExpectedFile.exists() && looksLikeExpectedFile.name == expectedFileName) {
-                    mainObject.main(looksLikeExpectedFile, args.toList())
+                    mainObject.main(devProject, looksLikeExpectedFile, args)
                     return
                 }
             }

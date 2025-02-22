@@ -28,7 +28,7 @@ class DevProject(val rootStore: RootStore) {
     val localProperties by lazy { LocalProperties(rootStore.place(localPropertiesPlace)) }
 
     val name: String by lazy {
-        val prjDesc = rootStore.file(mainDescLocalPath).run { if (exists()) readText() else "" }
+        val prjDesc = rootStore.place(mainDescLocalPath).readText()
         val prjName = prjDesc.let { if (it.isNotBlank()) it.lines()[0] else "" }.ifBlank { TODO() }
         prjName
     }
