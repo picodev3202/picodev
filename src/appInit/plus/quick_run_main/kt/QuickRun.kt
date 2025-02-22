@@ -10,7 +10,7 @@ object QuickRun {
         }
 
         abstract class Main : By {
-            class ThisFile(localPlace: LocalPlace) : LocalPlace by localPlace
+            class ThisFile(localPlace: LocalPlace) : LocalPlace.From(localPlace)
 
             abstract fun main(thisFile: ThisFile, args: List<String>)
         }

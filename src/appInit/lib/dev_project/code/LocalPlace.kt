@@ -1,5 +1,6 @@
 interface LocalPlace {
-    class Impl(override val file: LocalFile) : Abstract()
+    open class From(localPlace:LocalPlace) : Impl(localPlace.file)
+    open class Impl(override val file: LocalFile) : Abstract()
     abstract class Abstract() : LocalPlace {
         override fun toString(): String = path
     }

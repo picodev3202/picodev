@@ -1,7 +1,6 @@
 object DebugQuickRunMainObj : QuickRun.By.Main() {
     override fun main(thisFile: ThisFile, args: List<String>) {
         println("$logTagName.main $thisFile")
-        println("$logTagName.main ${thisFile.file}")
         println("$logTagName.main $objectName")
     }
 
