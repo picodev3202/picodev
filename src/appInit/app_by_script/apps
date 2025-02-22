@@ -15,7 +15,7 @@ CMD='nvim --clean -l'
 SCRIPT="$(dirname "$(realpath "$0")")"/lua/app.lua
 
 #RESULT_CMD=$($CMD "$SCRIPT" echoAppsByScriptStartCmd '..' '../plus/app0' '../plus/app1' '../plus/app2' '../plus/app3' )
-RESULT_CMD=$($CMD "$SCRIPT" echoAppsByScriptStartCmd      '../plus/app0' '../plus/app1' '../plus/app2' '../plus/app3')
+RESULT_CMD=$($CMD "$SCRIPT" echoAppsByScriptStartCmd      '../plus/app0' '../plus/app1' '../plus/app2' '../plus/app3' '../../../wwgen/tmp/app5' )
 
 echo "RESULT_CMD: })>$RESULT_CMD<({"
 sh -c "$RESULT_CMD $*"
