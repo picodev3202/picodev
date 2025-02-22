@@ -1,8 +1,19 @@
 object QuickRun {
-    interface Main {
+    interface Main : By.MainWithLocalPlace
+
+    sealed interface By {
         val objectName: String get() = this::class.java.name
         val logTagName: String get() = objectName
-        fun main(thisFile: LocalPlace, args: List<String>)
+
+        interface MainWithLocalPlace : By {
+            fun main(thisFile: LocalPlace, args: List<String>)
+        }
+
+        abstract class Main : By {
+            class ThisFile(localPlace: LocalPlace) : LocalPlace by localPlace
+
+            abstract fun main(thisFile: ThisFile, args: List<String>)
+        }
     }
 
     @Suppress("ConstPropertyName")
@@ -12,11 +23,12 @@ object QuickRun {
     const val comment = "//"
 
     @Suppress("NOTHING_TO_INLINE")
-    private inline fun Main.main(devProject: DevProject, thisFile: LocalPlace, args: Array<String>) {
-        main(thisFile, args.toList())
+    private inline fun By.main(devProject: DevProject, thisFile: LocalPlace, args: Array<String>) = when (this) {
+        is By.MainWithLocalPlace -> main(thisFile, args.toList())
+        is By.Main -> main(By.Main.ThisFile(thisFile), args.toList())
     }
 
-    fun lookupSrcFileByClassNameAndRun(mainObject: Main, args: Array<String>, configure: QuickRunParams.() -> Unit) {
+    fun lookupSrcFileByClassNameAndRun(mainObject: By, args: Array<String>, configure: QuickRunParams.() -> Unit) {
         val params = QuickRunParams()
         params.configure()
 
