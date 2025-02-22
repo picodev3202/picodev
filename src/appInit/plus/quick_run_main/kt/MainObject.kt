@@ -26,7 +26,7 @@ abstract class MainObject {
             val params = QuickRunParams()
             params.configure()
 
-            val devProject = DevProject.lookupBy(args)
+            val devProject = DevProjectLookup.by(args)
 
             val objectName = mainObject::class.java.name.let {
                 val char = "$"

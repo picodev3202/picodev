@@ -5,17 +5,7 @@ class DevProject(val rootStore: RootStore) {
         private const val wwgen = "wwgen"
         const val localPropertiesPlace = "$wwgen/local_properties_data"
         private const val srcPlace = "src"
-        const val genTmpPlace = "$wwgen/tmp"
-
-        fun lookupFromCurrentDir(): DevProject {
-            return DevProject(RootStore.lookupFromCurrentDir(mainDescLocalPath))
-        }
-
-        fun lookupBy(args: Array<String>): DevProject {
-            return args.firstOrNull()?.let { LocalPlace.of(it) }?.takeIf { it.exists() }
-                ?.let { DevProject(RootStore.lookupToParentOf(it)) }
-                ?: lookupFromCurrentDir()
-        }
+        private const val genTmpPlace = "$wwgen/tmp"
     }
 
     class ExtPlace(val localProperties: LocalProperties) {

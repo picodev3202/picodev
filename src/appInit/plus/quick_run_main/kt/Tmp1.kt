@@ -1,7 +1,7 @@
 object Tmp1 {
     @JvmStatic
     fun main(args: Array<String>) {
-        val devProject = DevProject.lookupBy(args)
+        val devProject = DevProjectLookup.by(args)
 
         val resStr = "ls -l".exec()
         println("Tmp1.main $resStr")

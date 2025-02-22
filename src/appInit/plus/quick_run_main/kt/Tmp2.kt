@@ -1,7 +1,7 @@
 object Tmp2 {
     @JvmStatic
     fun main(args: Array<String>) {
-        val devProject = DevProject.lookupBy(args)
+        val devProject = DevProjectLookup.by(args)
 
         println("Tmp2.main ${devProject.rootStore.file}")
         println("Tmp2.main ${devProject.rootStore.file("..")}")

@@ -83,7 +83,7 @@ object LocalPropertiesQuickHelperTool : LocalPropertiesConst by LocalPropertiesC
             val params = ParamsForUpdateLocalProperties()
             params.configure()
 
-            val devProject = DevProject.lookupBy(args)
+            val devProject = DevProjectLookup.by(args)
             val localPropertiesPlace = devProject.rootStore.place(DevProject.localPropertiesPlace)
 
             println("LocalPropertiesHelper   rootPlace ${devProject.rootStore.file}")
@@ -385,7 +385,7 @@ ${paramsNameAndOrder.joinToString("\n") { it.represent() }}
 
     @JvmStatic
     fun main(args: Array<String>) {
-        normalizeHelper(DevProject.lookupFromCurrentDir())
+        normalizeHelper(DevProjectLookup.fromCurrentDir())
     }
 
     val highlightsParamsOrder = listOf(

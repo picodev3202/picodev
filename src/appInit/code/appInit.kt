@@ -59,7 +59,7 @@ object appInit : NodeItems() {
         val utilModulesXml = IdeModulesXml
         val util = UtilSelectModuleItems
 
-        val devProject = DevProject.lookupBy(args)
+        val devProject = DevProjectLookup.by(args)
         val place = devProject.rootStore.file
         val placeSrc = devProject.src
         val prjName = devProject.name
