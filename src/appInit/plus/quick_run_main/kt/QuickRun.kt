@@ -17,13 +17,13 @@ object QuickRun {
     }
 
     @Suppress("ConstPropertyName")
-    const val fileNameExtension_Kt = "kt"
+    private const val fileNameExtension_Kt = "kt"
 
     @Suppress("ConstPropertyName")
-    const val comment = "//"
+    private const val comment = "//"
 
     @Suppress("NOTHING_TO_INLINE")
-    private inline fun By.main(devProject: DevProject, thisFile: LocalPlace, args: Array<String>) = when (this) {
+    private inline fun By.main(@Suppress("unused") devProject: DevProject, thisFile: LocalPlace, args: Array<String>) = when (this) {
         is By.MainWithLocalPlace -> main(thisFile, args.toList())
         is By.Main -> main(By.Main.ThisFile(thisFile), args.toList())
     }

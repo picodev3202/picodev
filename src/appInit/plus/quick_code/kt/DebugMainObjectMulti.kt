@@ -23,7 +23,16 @@ object DebugMainObjectMulti {
         }
 
         @JvmStatic
-        fun main(args: Array<String>) = MainObject(this, arrayOf("one", "two")) {
+        fun main(args: Array<String>) {
+            debugRunMain(args)
+            debugRunMain()
+        }
+
+        private fun debugRunMain(args: Array<String>) = MainObject(this, args) {
+            localPathToCurrentSourceFile..""
+        }
+
+        private fun debugRunMain() = MainObject(this, arrayOf("one", "two")) {
             localPathToCurrentSourceFile..""
         }
     }
