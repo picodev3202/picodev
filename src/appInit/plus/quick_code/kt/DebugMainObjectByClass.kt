@@ -1,5 +1,5 @@
 //
-class DebugMainObjectByClass : MainObject() {
+class DebugMainObjectByClass : MainObject.WithThisFile() {
     override fun main(args: Args) {
         println("$logTagName.main ${args.file}")
         println("$logTagName.main ${args.array}")
@@ -8,6 +8,4 @@ class DebugMainObjectByClass : MainObject() {
     }
 }
 
-fun main(args: Array<String>) = MainObject(DebugMainObjectByClass(), args) {
-    localPathToCurrentSourceFile..""
-}
+fun main(args: Array<String>) = MainObject(DebugMainObjectByClass(), args)

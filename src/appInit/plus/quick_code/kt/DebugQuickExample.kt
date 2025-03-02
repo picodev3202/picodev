@@ -1,4 +1,4 @@
-class DebugQuickExample : MainObject() {
+class DebugQuickExample : MainObject.WithThisFile() {
     override fun main(args: Args) {
         println("$logTagName.main ${args.file}")
 
