@@ -25,3 +25,9 @@ hs_err_pid*
 .git?/
 .git??/
 .git.*
+
+tmp/
+/tmp/
+/tmp?/
+/tmp??/
+/tmp???/

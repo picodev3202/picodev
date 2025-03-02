@@ -1,6 +1,6 @@
 // do not edit, file is generated
 @Suppress("PropertyName")
-class ParamsForUpdateLocalProperties {
+class ParamsForUpdateValues {
     val highlight by LocalPropertiesQuickHelperTool.QuickNamedString()
     val highlightSrc by LocalPropertiesQuickHelperTool.QuickNamedString()
     val highlightSrc1 by LocalPropertiesQuickHelperTool.QuickNamedString()
@@ -39,4 +39,6 @@ class ParamsForUpdateLocalProperties {
 
     fun propertyByName(propertyName: String) = map[propertyName]
         ?: LocalPropertiesQuickHelperTool.QuickNamedString.Val().apply { name = propertyName }
+
+    fun forEach(action: (LocalPropertiesQuickHelperTool.QuickNamed.ValCommon) -> Unit): Unit = map.values.forEach(action)
 }

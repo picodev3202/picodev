@@ -13,11 +13,14 @@ object appInit : NodeItems() {
             }
         }
 
-        @Suppress("unused", "PropertyName")
-        open class appInit(val lib: Lib = Lib(), val plus: Plus = Plus(lib)) : _Kt({ of(type.KtCode) depends on(lib.node_tree, lib.dev_project) }) {
+        @Suppress("unused", "PropertyName", "PrivatePropertyName")
+        open class appInit(val lib: Lib = Lib(), val plus: Plus = Plus(lib)) : _Kt({ of(type.KtCode) depends on(lib.node_tree, lib.dev_project_lookup) }) {
             open class Lib : _General() {
-                val node_tree = ___Kt({ of(type.KtCode) })
-                val dev_project = _Kt({ of(type.KtCode) })
+                val node_tree = __________Kt({ of(type.KtCode) depends on(local_place) })
+                val local_place = ________Kt({ of(type.KtCode) })
+                val local_user_home = ____Kt({ of(type.KtCode) depends on(local_place) })
+                val dev_project = ________Kt({ of(type.KtCode) depends on(local_place) })
+                val dev_project_lookup = _Kt({ of(type.KtCode) depends on(dev_project) })
             }
 
             open class Plus(libOfAppInit: Lib) : _General() {
@@ -25,9 +28,9 @@ object appInit : NodeItems() {
                 //private val app1 = _Kt({ of(type.Kt) }) // unusable by 'app_simple_by_gradle', just for example, only with 'src dir' 'code' by 'of(type.KtCode)' implemented now
                 //private val app2 = _Kt({ of(type.KtCode) })
                 //private val app3 = SimpleApp()
-                val local_properties_generate_code = _Kt({ of(type.Kt) depends on(libOfAppInit.dev_project) })
-                val quick_run_main = _________________Kt({ of(type.Kt) depends on(libOfAppInit.dev_project) })
-                private val quick_code = _____________Kt({ of(type.Kt) depends on(quick_run_main) })
+                val local_properties_generate_code = _Kt({ of(type.Kt) depends on(libOfAppInit.dev_project_lookup, libOfAppInit.local_user_home) })
+                val main_object = ____________________Kt({ of(type.Kt) depends on(libOfAppInit.dev_project_lookup) })
+                private val quick_code = _____________Kt({ of(type.Kt) depends on(main_object) })
                 private val scriptTemplate = _________Kt({ })
             }
         }
@@ -37,22 +40,17 @@ object appInit : NodeItems() {
         val jSerialComm_2_9_2 = _Library("jSerialComm-2.9.2") //https://github.com/Fazecast/jSerialComm/releases/tag/v2.11.0
     }
 
+    object srcOf {
+        val quickRun = src.appInit.plus.main_object
+        val local_place = src.appInit.lib.local_place
+        val dev_project = src.appInit.lib.dev_project
+    }
+
     object src : SrcPlace() {
         val appInit = Template.appInit()
 
         object board_code : Template.suit_board_code()
     }
-
-    val LocalFile.deleteIfExist: Boolean
-        get() {
-            if (exists()) {
-                if (isDirectory) deleteRecursively()
-                else delete()
-                println("remove: $absolutePath")
-                return true
-            }
-            return false
-        }
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -60,7 +58,7 @@ object appInit : NodeItems() {
         val util = UtilSelectModuleItems
 
         val devProject = DevProjectLookup.by(args)
-        val place = devProject.rootStore.file
+        val place = devProject.rootPlace
         val placeSrc = devProject.src
         val prjName = devProject.name
 
@@ -79,7 +77,7 @@ object appInit : NodeItems() {
                     val from = placeSrc.file(fs)
                     println("Init.main  copy from : $from to : $moduleDir")
                     from.walk().onEnter {file -> when (file.name) {//@formatter:off
-                        ".gradle", "build" -> {                  file.deleteIfExist; false}
+                        ".gradle", "build" -> { LocalPlace.of(file).deleteIfExist(); false}
                         ".idea", ".git" -> { println("skip walk: $file"); false}
                         else -> true                 }
                     }.forEach {}
@@ -93,7 +91,7 @@ object appInit : NodeItems() {
         println("Init.main modules count ${modulesRelativePath.size}")
         if (modulesRelativePath.isNotEmpty()) {
             val modulesXmlStr = utilModulesXml.modulesXml(modulesRelativePath)
-            val modulesFile = LocalFile(place, "$prjName/.idea/modules.xml")
+            val modulesFile = place.file("$prjName/.idea/modules.xml")
             println("Init.main $modulesFile")
             modulesFile.apply { parentFile.mkdirs() }.writeText(modulesXmlStr)
         }

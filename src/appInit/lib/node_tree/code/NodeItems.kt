@@ -1,3 +1,4 @@
+@Suppress("FunctionName","PropertyName")
 abstract class NodeItems {
     object type {
         val KtCode = DefaultTypes.data.KtCode
@@ -23,10 +24,10 @@ abstract class NodeItems {
         }
         interface CopyOf {
             val contentOf: Content?
-            val isReallyCopy :Boolean
+            val isReallyCopy: Boolean
         }
-        interface ItemContent : Content , CopyOf {
-            val nodeFrom:Any
+        interface ItemContent : Content, CopyOf {
+            val nodeFrom: Any
             val dependency: List<ItemContent>
             override val contentOf: ItemContent?
         }
@@ -186,17 +187,18 @@ abstract class NodeItems {
 
             val ParamsBuilder<O, T>.highlights get() = Unit
 
-            fun ParamsBuilder<O, T>.cp(from: O, isReallyCopy: Boolean = true) = _copyContentOf(from, isReallyCopy)
-            fun ParamsBuilder<O, T>.copy(from: O, isReallyCopy: Boolean = true) = _copyContentOf(from, isReallyCopy)
-            fun ParamsBuilder<O, T>.copyContent(from: O, isReallyCopy: Boolean = true) = _copyContentOf(from, isReallyCopy)
-            fun ParamsBuilder<O, T>.copyContentOf(from: O, isReallyCopy: Boolean = true) = _copyContentOf(from, isReallyCopy)
-//            fun ParamsBuilder<O, T>.copyContentOfIfNotExists(from: O, isReallyCopy: Boolean = true) = _copyContentOf(from, isReallyCopy)
+            fun ParamsBuilder<O, T>.cp(from: O, isReallyCopy: Boolean = true) = _copyContentOf(this, from, isReallyCopy)
+            fun ParamsBuilder<O, T>.copy(from: O, isReallyCopy: Boolean = true) = _copyContentOf(this, from, isReallyCopy)
+            fun ParamsBuilder<O, T>.copyContent(from: O, isReallyCopy: Boolean = true) = _copyContentOf(this, from, isReallyCopy)
+            fun ParamsBuilder<O, T>.copyContentOf(from: O, isReallyCopy: Boolean = true) = _copyContentOf(this, from, isReallyCopy)
+            // fun ParamsBuilder<O, T>.copyContentOfIfNotExists(from: O, isReallyCopy: Boolean = true) = _copyContentOf(this, from, isReallyCopy)
 
-            private fun _copyContentOf(from: O, isReallyCopy: Boolean) {
+            private fun _copyContentOf(paramsBuilder: ParamsBuilder<O, T>, from: O, isReallyCopy: Boolean): ParamsBuilder<O, T> {
                 if (null == from) TODO("'copyContentFrom' can not be null")
                 if (current == from) TODO("'copyContentFrom' can not be the same: '$current' '$from'")
                 _copyContentOf = from
                 _isReallyCopy = isReallyCopy
+                return paramsBuilder
             }
         }
 

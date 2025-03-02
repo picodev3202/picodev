@@ -11,6 +11,22 @@ abstract class MainObject {
     open fun main(args: Args): Unit = System.err.println(" please 'override fun main(args: Args)' in $objectName")
 
     companion object {
+        class QuickNamedString {
+            class Val {
+                var name = ""
+                var value = ""
+                operator fun rangeTo(value: String): Unit = run { this.value = value }
+                override fun toString() = "(name=$name, value=$value)"
+            }
+
+            private val _val = Val()
+            operator fun getValue(@Suppress("unused") thisRef: Any?, property: kotlin.reflect.KProperty<*>) = _val.apply { name = property.name }
+        }
+
+        class QuickRunParams {
+            val localPathToCurrentSourceFile by QuickNamedString()
+        }
+
         @Suppress("ConstPropertyName")
         private const val fileNameExtension_Kt = "kt"
 
@@ -53,7 +69,7 @@ abstract class MainObject {
             val paramName = params.localPathToCurrentSourceFile.name
 
             if (foundFiles.isEmpty()) {
-                TODO("file by name='$expectedFileName' not fount in '${devProject.rootStore}'")
+                TODO("file by name='$expectedFileName' not fount in '${devProject.rootPlace}'")
             } else if (foundFiles.size == 1) {
                 val thisFile = LocalPlace.of(foundFiles[0])
                 val foundParamList = mutableListOf<String>()

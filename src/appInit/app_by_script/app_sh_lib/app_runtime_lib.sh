@@ -25,7 +25,6 @@ lookupOneRunCmd() {
   ensureRunDir
   TOOL_ONE_RUN_CMD=/opt/local/gradle/bin/gradle
   TOOL_ONE_RUN_HOME="$RUN_DIR/one_run_home"
-  TOOL_ONE_RUN_DEFAULT_ARGS="--gradle-user-home=$TOOL_ONE_RUN_HOME --offline"
   export JAVA_HOME=/opt/local/jdk
 }
 
@@ -75,7 +74,6 @@ ensure_app_by_script_place() { # lookupDevPlace $SCRIPT_FULL_PATH
   APP_BY_SCRIPT_NAME="$(basename "$(realpath "$PLACE_OF_SCRIPT_FULL_PATH/..")")"
   APP_BY_SCRIPT__DIR="$RUN_PLACE_APP__TMP/$APP_BY_SCRIPT_NAME"
   APP_BY_SCRIPT__DIR_LINK="$DEV_PLACE_GEN_TMP/run_$APP_BY_SCRIPT_NAME"
-  APP_BY_SCRIPT_TOOL_FILE="$APP_BY_SCRIPT__DIR/build.gradle.kts"
 
   # TMP_FILE="$APP_BY_SCRIPT__DIR/$(date +%d_%Hh%Mm%Ss%N)"
 

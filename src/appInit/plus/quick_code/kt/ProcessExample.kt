@@ -31,20 +31,36 @@ object ProcessExample {
 
         print("pwd".exec { directory("..") }.waitOutput())
         print("pwd".exec { dir("..") }.waitOutput())
-        val process = "ls -la ".exec({ dir("..") })
+        val process = "ls -la ".exec { dir("..") }
         print(process.waitOutput())
+
+        val devProject = DevProjectLookup.by(args)
+        devProject.genTmp.takeIf { it.exists() }?.let { println("ls -l".exec { dir(it) }.waitOutput()) }
+
+        println("ls -l".exec { directory(devProject.src) }.waitOutput())
+
+        devProject.genTmp.place("tmp1.txt") update " "
     }
 
     fun String.exec() = exec { }
     fun String.exec(block: ProcessBuilder.() -> Unit): Process {
+        print(this)
         val processBuilder = ProcessBuilder("sh", "-c", this)
         processBuilder.block()
         val process = processBuilder.start()
         return Process(processBuilder, process)
     }
 
+    fun ProcessBuilder.dir(place: LocalPlace) {
+        directory(place.file)
+    }
+
     fun ProcessBuilder.dir(place: String) {
         directory(place)
+    }
+
+    fun ProcessBuilder.directory(place: LocalPlace) {
+        directory(place.file)
     }
 
     fun ProcessBuilder.directory(place: String) {

@@ -55,7 +55,8 @@ object UtilSelectModuleItems : NodeItems() {
 
             itemsWithDetectedAllDependency.forEach {
                 action(
-                    Out(it.itemIn.path,
+                    Out(
+                        it.itemIn.path,
                         it.itemIn.itemContent,
                         it.dependency,
                         it.allDependency,
