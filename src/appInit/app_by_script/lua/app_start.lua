@@ -30,7 +30,7 @@ end
 
 function code.main()
     print("start ", arg[0], "\n")
-    local sh_file = code.path_real(vim.fs.dirname(arg[0]), "../app.sh")
+    local sh_file = code.path_real(vim.fs.dirname(arg[0]), "../app_lua_debug")
     print("start ", sh_file, "\n")
     os.execute("sh " .. sh_file)
 end

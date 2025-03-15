@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="EeeKt" type="JetRunConfigurationType" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="EeeKt" />
+    <module name="appInit.plus.local_properties_generate_code" />
+    <option name="PROGRAM_PARAMETERS" value="$ProjectFileDir$/../src/appInit/plus/local_properties_generate_code/kt/eee.kt $ProjectFileDir$ $MODULE_DIR$ $FileDir$ $FilePath$ $ClipboardContent$" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

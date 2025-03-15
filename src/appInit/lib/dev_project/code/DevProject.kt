@@ -1,8 +1,11 @@
-@Suppress("ConstPropertyName", "SpellCheckingInspection")
-class DevProject(val rootStore: RootStore) {
+@Suppress(
+    "ConstPropertyName",
+    "SpellCheckingInspection",
+)
+class DevProject(val rootPlace: LocalPlace) {
     companion object {
         const val mainDescLocalPath = ".internal/place_config_desc"
-        private const val wwgen = "wwgen"
+        const val wwgen = "wwgen"
         const val localPropertiesPlace = "$wwgen/local_properties_data"
         private const val srcPlace = "src"
         private const val genTmpPlace = "$wwgen/tmp"
@@ -15,14 +18,14 @@ class DevProject(val rootStore: RootStore) {
     }
 
     val extPlace by lazy { ExtPlace(localProperties) }
-    val localProperties by lazy { LocalProperties(rootStore.place(localPropertiesPlace)) }
+    val localProperties by lazy { LocalProperties(rootPlace.place(localPropertiesPlace)) }
 
     val name: String by lazy {
-        val prjDesc = rootStore.place(mainDescLocalPath).readText()
+        val prjDesc = rootPlace.place(mainDescLocalPath).readText()
         val prjName = prjDesc.let { if (it.isNotBlank()) it.lines()[0] else "" }.ifBlank { TODO() }
         prjName
     }
 
-    val src by lazy { LocalPlace.of(rootStore.file(srcPlace)) }
-    val genTmp by lazy { LocalPlace.of(rootStore.file(genTmpPlace)) }
+    val src by lazy { LocalPlace.of(rootPlace.file(srcPlace)) }
+    val genTmp by lazy { LocalPlace.of(rootPlace.file(genTmpPlace)) }
 }

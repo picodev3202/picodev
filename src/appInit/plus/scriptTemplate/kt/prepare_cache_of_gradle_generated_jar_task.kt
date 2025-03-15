@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "FunctionName")
 
 
 val tmp02 = ScriptApi.
@@ -17,7 +17,6 @@ buildscript {
         description = "generatedDebugTaskDesk"
         group = "generated"
 
-        @Suppress("FunctionName")
         doLast {
             fun LocalFile(parent: String, child: String) = java.io.File(parent, child)
             val cachesJars = LocalFile(gradle.gradleUserHomeDir.absolutePath, "caches/${gradle.gradleVersion}/generated-gradle-jars/")

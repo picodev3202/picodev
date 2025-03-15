@@ -1,3 +1,4 @@
+@Suppress("SpellCheckingInspection", "unused")
 object ScriptApi {
 
     interface Gradle {
@@ -30,7 +31,6 @@ object ScriptApi {
 
     interface BuildScriptNodeApi : Project, ApplyApi
 
-    @Suppress("SpellCheckingInspection")
     fun allprojects(block: Project.() -> Unit) = Unit
     fun buildscript(block: BuildScriptNodeApi.() -> Unit) = Unit
 }

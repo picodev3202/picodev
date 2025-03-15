@@ -1,54 +1,19 @@
-@Suppress("MemberVisibilityCanBePrivate")
 object ProcessExample {
-
-    class Process(private val processBuilder: ProcessBuilder, private val process: java.lang.Process) {
-
-        fun waitOutput(): ProcessOutput {
-            var out = ""
-            java.io.BufferedReader(java.io.InputStreamReader(process.inputStream)).use { input ->
-                var line: String?
-                while (input.readLine().also { line = it } != null) {
-                    out += line
-                    out += "\n"
-                }
-            }
-            process.destroy()
-            return ProcessOutput(out)
-        }
-
-    }
-
-    class ProcessOutput(private val outStr: String) {
-        override fun toString(): String {
-            return outStr
-        }
-    }
-
     @JvmStatic
-    fun main(args: Array<String>) {
+    fun main(args: Array<String>) = with(ExecProcess) {
         print("pwd".exec().waitOutput())
         print("ls -la".exec().waitOutput())
 
         print("pwd".exec { directory("..") }.waitOutput())
         print("pwd".exec { dir("..") }.waitOutput())
-        val process = "ls -la ".exec({ dir("..") })
+        val process = "ls -la ".exec { dir("..") }
         print(process.waitOutput())
-    }
 
-    fun String.exec() = exec { }
-    fun String.exec(block: ProcessBuilder.() -> Unit): Process {
-        val processBuilder = ProcessBuilder("sh", "-c", this)
-        processBuilder.block()
-        val process = processBuilder.start()
-        return Process(processBuilder, process)
-    }
+        val devProject = DevProjectLookup.by(args)
+        devProject.genTmp.takeIf { it.exists() }?.let { println("ls -l".exec { dir(it) }.waitOutput()) }
 
-    fun ProcessBuilder.dir(place: String) {
-        directory(place)
-    }
+        println("ls -l".exec { directory(devProject.src) }.waitOutput())
 
-    fun ProcessBuilder.directory(place: String) {
-        directory(java.io.File(place))
+        devProject.genTmp.place("tmp1.txt") update " "
     }
-
 }

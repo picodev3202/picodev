@@ -1,6 +1,9 @@
 import kotlin.reflect.KClass
 
-@Suppress("ConstPropertyName")
+@Suppress(
+    "ConstPropertyName",
+    "LocalVariableName",
+)
 object LocalPropertiesQuickHelperTool : LocalPropertiesConst by LocalPropertiesConst {
 
     const val EMPTY_STR_VALUE = ""
@@ -13,15 +16,7 @@ object LocalPropertiesQuickHelperTool : LocalPropertiesConst by LocalPropertiesC
             abstract fun update(content: ValCommon)
         }
 
-        operator fun getValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>) = _val.apply { name = property.name }
-    }
-
-    class QuickNamedEmpty : QuickNamed<QuickNamedEmpty.Val>(Val()) {
-        class Val : ValCommon() {
-            var value = EMPTY_STR_VALUE
-            override fun update(content: ValCommon) {
-            }
-        }
+        operator fun getValue(@Suppress("unused") thisRef: Any?, property: kotlin.reflect.KProperty<*>) = _val.apply { name = property.name }
     }
 
     class QuickNamedString : QuickNamed<QuickNamedString.Val>(Val()) {
@@ -60,12 +55,6 @@ object LocalPropertiesQuickHelperTool : LocalPropertiesConst by LocalPropertiesC
     }
 
     class QuickNamedType(val klass: KClass<out QuickNamed<*>>) {
-        val klassVal: KClass<out Any> = when (klass) {
-            QuickNamedString::class -> QuickNamedString.Val::class
-            QuickNamedHighlight::class -> QuickNamedHighlight.Val::class
-            else -> TODO()
-        }
-
         companion object {
             val string = QuickNamedType(QuickNamedString::class)
             val highlightInSrc = QuickNamedType(QuickNamedString::class)
@@ -75,121 +64,142 @@ object LocalPropertiesQuickHelperTool : LocalPropertiesConst by LocalPropertiesC
     }
 
     object UpdateHelper {
-        private val uid by lazy { "id --user".exec().trim() }
-        private val systemTempDir by lazy { "/tmp/" }
-        private val userRuntimeDirInMemory by lazy { "/run/user/$uid" }
+        private val uid by lazy { LocalSystem.userId }
+        private val systemTempDir by lazy { LocalSystem.tempDir }
+        private val userRuntimeDirInMemory by lazy { LocalSystem.userRuntimeDir }
 
-        operator fun invoke(args: Array<String>, configure: ParamsForUpdateLocalProperties.() -> Unit) {
-            val params = ParamsForUpdateLocalProperties()
+        operator fun Array<String>.component1() = takeIf { it.size >= 1 }?.let { it[0] } ?: ""
+        operator fun Array<String>.component2() = takeIf { it.size >= 2 }?.let { it[1] } ?: ""
+        operator fun Array<String>.component3() = takeIf { it.size >= 3 }?.let { it[2] } ?: ""
+        operator fun Array<String>.component4() = takeIf { it.size >= 4 }?.let { it[3] } ?: ""
+        operator fun Array<String>.component5() = takeIf { it.size >= 5 }?.let { it[4] } ?: ""
+        operator fun Array<String>.component6() = takeIf { it.size >= 6 }?.let { it[5] } ?: ""
+        operator fun Array<String>.component7() = takeIf { it.size >= 7 }?.let { it[6] } ?: ""
+        operator fun Array<String>.component8() = takeIf { it.size >= 8 }?.let { it[7] } ?: ""
+        operator fun Array<String>.component9() = takeIf { it.size >= 9 }?.let { it[8] } ?: ""
+        operator fun Array<String>.component10() = takeIf { it.size >= 10 }?.let { it[9] } ?: ""
+        operator fun Array<String>.component11() = takeIf { it.size >= 11 }?.let { it[10] } ?: ""
+        operator fun Array<String>.component12() = takeIf { it.size >= 12 }?.let { it[11] } ?: ""
+
+        operator fun invoke(args: Array<String>, configure: ParamsForUpdateValues.() -> Unit) = with(ToolInfo) {
+            //try {
+            //    println(args.toList())
+            //    val (ktFile, projectFileDir, moduleDir, fileDir, filePath, clipboardContent, tmp1, tmp2, tmp3) = args
+            //    println("ktFile           '$ktFile'")
+            //    println("projectFileDir   '$projectFileDir'")
+            //    println("moduleDir        '$moduleDir'")
+            //    println("fileDir          '$fileDir'")
+            //    println("filePath         '$filePath'")
+            //    println("clipboardContent '$clipboardContent'")
+            //    println("tmp1 '$tmp1'")
+            //    println("tmp2 '$tmp2'")
+            //    println("tmp3 '$tmp3'")
+            //} catch (e: Exception) {
+            //    e.printStackTrace()
+            //}
+
+            val params = ParamsForUpdateValues()
             params.configure()
 
             val devProject = DevProjectLookup.by(args)
-            val localPropertiesPlace = devProject.rootStore.place(DevProject.localPropertiesPlace)
+            val localPropertiesPlace = devProject.rootPlace.place(DevProject.localPropertiesPlace)
 
-            println("LocalPropertiesHelper   rootPlace ${devProject.rootStore.file}")
-            println("LocalPropertiesHelper update from ${params.localPathToCurrentFile}")
+            println("LocalProperties update from file://${devProject.src.path(params.localPathToCurrentFile.value)}")
 
-            val scratches = "/scratches/"
-            val consolesIde = "consoles/ide"
-            val defaultIdeScript = "ide-scripting.kts"
-            val defaultIdeScriptContent = """//
-KotlinVersion.CURRENT
-"""
-            val ideScripting = "$consolesIde/$defaultIdeScript"
             params.params_pathForLookupIdeScriptingPlace.value.trim().let {
-                if (it.isNotBlank()) {
-
-                    val ideConfDir = LocalPlace.of(
+                val ideConfDir = if (it.isBlank()) {
+                    val info = DevProjectToolInfoLookup.toolInfoIn(devProject)
+                    LocalPlace.of(LocalSystem.userConfigDir).place(info.appVendor).place(info.appVersion).takeIf { info.appVendor.isNotEmpty() && info.appVersion.isNotEmpty() }
+                } else {
+                    LocalPlace.of(
                         if (it.contains(scratches)) it.split(scratches)[0]
                         else if (it.contains(consolesIde)) it.split(consolesIde)[0]
                         else TODO("unexpected path for lookupIdeScriptingPlace '$it'")
                     )
-                    if (ideConfDir.exists()) {
-                        val ideScriptingFile = ideConfDir.place(ideScripting)
-                        ideScriptingFile create { defaultIdeScriptContent }
-                        val consolesIdeDir = ideConfDir.place(consolesIde)
-                        if (consolesIdeDir.exists()) {
-                            val pathOfIdeScripting = localPropertiesPlace.place(conf_place.of_ide_scripting)
-                            println("UpdateHelper.invoke ${consolesIdeDir}")
-                            pathOfIdeScripting update consolesIdeDir.path
-                        } else TODO()
+                }
+                if (ideConfDir?.exists() == true) {
+                    val ideScriptingFile = ideConfDir.place(ideScripting)
+                    ideScriptingFile createSilent  { defaultIdeScriptContent }
+                    val consolesIdeDir = ideConfDir.place(consolesIde)
+                    if (consolesIdeDir.exists()) {
+                        val pathOfIdeScripting = localPropertiesPlace.place(conf_place.of_ide_scripting)
+                        // println("UpdateHelper.invoke $consolesIdeDir")
+                        pathOfIdeScripting updateSilent consolesIdeDir.path
                     } else TODO()
                 }
             }
 
             if (uid.isEmpty()) TODO()
 
-            val confTmpPlace = fun(it: QuickNamedString.Val, confPlace: String, sysPlace: String, dirName: (String) -> String) {
+            val confTmpPlace = fun(it: QuickNamedString.Val, confPlace: String, sysPlace: String, useStrict: Boolean, dirName: (String) -> String) {
                 val prefix = it.value.trim().ifEmpty { "one" }
                 val pathOfTmpConf = localPropertiesPlace.place(confPlace)
-                if (!LocalFile(sysPlace).exists()) TODO("'$sysPlace' not exists")
+                if (!LocalPlace.of(sysPlace).exists()) TODO("'$sysPlace' not exists")
                 val tmpDirNewPath = "$sysPlace/${dirName(prefix)}"
-                val tmpDirNew = LocalFile(tmpDirNewPath).absoluteFile
-                if (tmpDirNew.exists()) TODO("'$tmpDirNew' already exists, please use another prefix for '${it.name}'")
-                pathOfTmpConf update tmpDirNew.absolutePath
-                println("UpdateHelper confTmpPlace ${tmpDirNew.absolutePath}")
+                val tmpDirNew = LocalPlace.of(tmpDirNewPath).file
+                if (useStrict && tmpDirNew.exists()) TODO("'$tmpDirNew' already exists, please use another prefix for '${it.name}'")
+                pathOfTmpConf updateSilent tmpDirNew.absolutePath
+                // if (!useStrict) println("UpdateHelper confTmpPlace ${tmpDirNew.absolutePath}")
             }
 
-            val highlights = ParamsOfHighlights()
+            val highlights = ParamsForUpdateValues()
             highlights.forEach { it.update(params.propertyByName(it.name)) }
 
-            confTmpPlace(params.params_prefixOfTmpDirQuick, conf_place.of__tmp_dir_quick, userRuntimeDirInMemory) { "${devProject.name}_$it" }
-            confTmpPlace(params.params_prefixOfTmpDirBig, conf_place.of__tmp_dir_big, systemTempDir) { "${devProject.name}_${uid}_$it" }
+            val devPlaceRootName = LocalPlace.of(with(ExecProcess) { "realpath ${devProject.rootPlace.path}".exec.waitOutput().toString() }).name
+            val devPlaceName = devProject.name
+            val devPlaceUid = "_u_${devPlaceRootName}__$devPlaceName"
+            val updatedName: (String) -> String = { "${devPlaceUid}/_${it}_" }
 
-            println()
+            confTmpPlace(params.params_prefixOfTmpDirBig, conf_place.of__tmp_dir_big, systemTempDir, false) { "${devPlaceUid}_${uid}__$it" }
+            confTmpPlace(params.params_prefixOfTmpDirQuick, conf_place.of__tmp_dir_quick, userRuntimeDirInMemory, false, updatedName)
+
+            // println()
             val highlightsInfo = normalizeHelper(devProject, highlights)
-            println()
-//            println("value of 'pathOfTmpDirBig'    is '${devProject.localProperties.pathOfTmpDirBig}'")
-//            println("value of 'pathOfTmpDirQuick'  is '${devProject.localProperties.pathOfTmpDirQuick}'")
-//            println("value of 'pathOfIdeScripting' is '${devProject.localProperties.pathOfIdeScripting}'")
+            // println()
             println("value of 'pathOfTmpDirBig'    is '${devProject.extPlace.tmpDirBig}'")
             println("value of 'pathOfTmpDirQuick'  is '${devProject.extPlace.tmpDirQuick}'")
-            //println("value of 'pathOfIdeScripting' is '${devProject.extPlace.ideScripting}'")
-
 
             if (devProject.localProperties.pathOfIdeScripting.isEmpty()) {
                 println("path to 'ide scripting' is undefined")
             } else {
-                println("value of 'default ide script' is 'file:///${devProject.extPlace.ideScripting.file(defaultIdeScript)}'")
-                devProject.extPlace.ideScripting.place(defaultIdeScript) create { defaultIdeScriptContent }
+                println("value of 'default ide script' is 'file://${devProject.extPlace.ideScripting.file(defaultIdeScript)}'")
+                devProject.extPlace.ideScripting.place(defaultIdeScript) createSilent { defaultIdeScriptContent }
             }
 
             highlightsInfo.forEach { println(it) }
-        }
-    }
 
-    fun String.exec(): String {
-        val process = ProcessBuilder("sh", "-c", this).start()
-        var out = ""
-        java.io.BufferedReader(java.io.InputStreamReader(process.inputStream)).use { input ->
-            var line: String?
-            while (input.readLine().also { line = it } != null) {
-                out += line
-                out += "\n"
+            "highlights.txt".let { highlights_txt ->
+                if (devProject.localProperties.store.place(highlights_txt).exists()) {
+                    devProject.localProperties.readFrom(highlights_txt).lines().forEach {
+                        it.takeIf { it.isNotBlank() }?.let {
+                            println("from highlights.txt: file://$it")
+                        }
+                    }
+                } else {
+                    devProject.localProperties.store.place(highlights_txt).let { it update it.path }
+                }
             }
+
+            confTmpPlace(params.params_prefixOfTmpDirBig, conf_place.of__tmp_dir_big, systemTempDir, true) { "${devPlaceUid}__${uid}_$it" }
+            confTmpPlace(params.params_prefixOfTmpDirQuick, conf_place.of__tmp_dir_quick, userRuntimeDirInMemory, true, updatedName)
         }
-        process.destroy()
-        return out
     }
 
-    private fun normalizeHelper(devProject: DevProject, highlights: ParamsOfHighlights = ParamsOfHighlights()): ArrayList<String> {
+    private fun normalizeHelper(devProject: DevProject, highlights: ParamsForUpdateValues = ParamsForUpdateValues()): ArrayList<String> {
         val objectName = this::class.java.name
         fun KClass<*>.klassName(): String = java.name.split("$").last()
         val updateHelperName = UpdateHelper::class.klassName()
         val quickNamedStringName = QuickNamedString::class.klassName()
         val quickNamedStringValName = QuickNamedString.Val::class.klassName()
-        val quickNamedEmptyName = QuickNamedEmpty::class.klassName()
-        val quickNamedEmptyValName = QuickNamedEmpty.Val::class.klassName()
         val quickNamedName = QuickNamed::class.klassName()
         val quickNamedValName = QuickNamed.ValCommon::class.klassName()
 
-        val paramsOfHighlightsName = ParamsOfHighlights::class.java.name
-        val paramsForUpdateLocalPropertiesName = ParamsForUpdateLocalProperties::class.java.name
+        val paramsForUpdateLocalPropertiesName = ParamsForUpdateValues::class.java.name
 
         class ValuePair(val name: String, val value: String) {
-            private val columnLength = 16
+            private val columnLength = 17
             private fun String.normalize(): String = let { it + String.format("%" + ((columnLength - it.length).let { if (it < 1) 1 else it }) + "s", " ") }
-            fun represent(): String = "${name.normalize()}is 'file:///$value'"
+            fun represent(): String = "${name.normalize()}is 'file://${LocalPlace.of(value).path}'"
         }
 
         class ItemValue(val type: QuickNamedType, val name: String, val basePlace: LocalPlace, val valueStr: String = EMPTY_STR_VALUE, val valueList: List<String> = emptyList()) {
@@ -269,13 +279,13 @@ KotlinVersion.CURRENT
 
         class Item(val type: QuickNamedType, val name: String, val base: String = EMPTY_STR_VALUE, val valueStr: String = EMPTY_STR_VALUE, val valueList: List<String> = emptyList()) {
             fun value(): ItemValue = when (type) {
-                QuickNamedType.string -> ItemValue(type, name, devProject.rootStore, valueStr)
+                QuickNamedType.string -> ItemValue(type, name, devProject.rootPlace, valueStr)
                 QuickNamedType.highlightInSrc -> ItemValue(type, name, devProject.src, valueStr)
                 QuickNamedType.highlights -> {
                     //println("  DEBUG  $name   $base")
-                    var basePlace = devProject.rootStore.file(base)
+                    var basePlace = devProject.rootPlace.file(base)
                     if (!basePlace.exists()) {
-                        basePlace = devProject.rootStore.file
+                        basePlace = devProject.rootPlace.file
                     }
                     ItemValue(type, name, LocalPlace.of(basePlace), valueList = valueList).also { it.pref = if (base.isEmpty() || name == base) "" else "\"${base}\", " }
                 }
@@ -320,8 +330,6 @@ KotlinVersion.CURRENT
                         Item(type, name, base = base, valueList = value)
                     } else if (this is QuickNamedString.Val) {
                         Item(type, name, valueStr = value)
-                    } else if (this is QuickNamedEmpty.Val) {
-                        Item(type, id)
                     } else TODO()
                 }
             }.toTypedArray()
@@ -348,19 +356,6 @@ ${paramsNameAndOrder.joinToString("\n") { "        \"${it.name}\" to ${it.name},
 
     fun propertyByName(propertyName: String) = map[propertyName]
         ?: ${objectName}.${quickNamedStringName}.$quickNamedStringValName().apply { name = propertyName }
-}"""
-
-            val highlightsParamsClassStr = """$doNotEditFileIsGenerated
-@Suppress("MemberVisibilityCanBePrivate")
-class $paramsOfHighlightsName {
-${highlightsParams.sortedBy { it.name }.joinToString("\n") { "    val ${it.name} by ${objectName}.${it.typeNameRepresent}()" }}
-
-    private val map = mapOf(
-${highlightsParams.joinToString("\n") { "        \"${it.name}\" to ${it.name}," }}
-    )
-
-    fun propertyByName(propertyName: String) = map[propertyName]
-        ?: ${objectName}.${quickNamedEmptyName}.$quickNamedEmptyValName()
 
     fun forEach(action: (${objectName}.${quickNamedName}.$quickNamedValName) -> Unit): Unit = map.values.forEach(action)
 }"""
@@ -368,13 +363,12 @@ ${highlightsParams.joinToString("\n") { "        \"${it.name}\" to ${it.name}," 
 //@Suppress("SpellCheckingInspection")
             val outStr = """$comment
 fun main(args: Array<String>) = ${objectName}.${updateHelperName}(args) {
-    ${objectName}.highlightsParamsOrder // ... to append 'highlightSrcN'
+    ${objectName}.highlightsParamsOrder // ... to append 'highlight...'
 ${paramsNameAndOrder.joinToString("\n") { it.represent() }}
 }"""
 
-            thisFileParentPlace.place("${paramsForUpdateLocalPropertiesName}.$fileNameExtension_Kt") update paramsClassStr
-            thisFileParentPlace.place("${paramsOfHighlightsName}.$fileNameExtension_Kt") update highlightsParamsClassStr
-            thisFileParentPlace.place( outFileName) update outStr
+            thisFileParentPlace.place("${paramsForUpdateLocalPropertiesName}.$fileNameExtension_Kt") updateSilent paramsClassStr
+            thisFileParentPlace.place(outFileName) updateSilent outStr
 
         } else {
             foundFiles.forEach { println("'$objectName' foundFile = $it") }

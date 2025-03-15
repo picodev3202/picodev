@@ -6,24 +6,31 @@ local code = {}
 code.ONE_RUN_CMD_SCRIPT = "build.gradle.kts"
 code.ONE_RUN_CMD_SETTINGS = "settings.gradle.kts"
 
+code.fs = {}
+
 function code.log_info_permanent(...)
     print(...)
-    print("\n")
+    --print("\n")
 end
 
 function code.log_info(...)
     print(...)
-    print("\n")
+    --print("\n")
 end
 
 function code.log_warn(...)
     print(...)
-    print("\n")
+    --print("\n")
 end
 
 function code.log_debug(...)
-    print(...)
-    print("\n")
+    --print(...)
+    --print("\n")
+end
+
+function code.log_debug_lite(...)
+    --print(...)
+    --print("\n")
 end
 
 function code.exitWithErrorMsg(exitCode, msg)
@@ -37,6 +44,60 @@ end
 
 function code.warningMsg(msg)
     code.log_warn("warning msg :", msg) -- >&2
+end
+
+function code.isTrue(intValue)
+    return intValue == 1
+end
+
+function code.fs.isLink(fsPath)
+    local result = vim.uv.fs_lstat(fsPath)
+    --code.log_info("isFsLink :", result)
+    --code.log_info("isFsLink :", nil == result)
+    if nil ~= result and result.type == "link" then
+        return 1
+    end
+    return 0
+end
+function code.fs.isDirectory(fsPath)
+    local result = vim.uv.fs_lstat(fsPath)
+    --code.log_info("isFsDirectory :", result)
+    --code.log_info("isFsDirectory :", nil == result)
+    if nil ~= result and result.type == "directory" then
+        return 1
+    end
+    return 0
+end
+
+function code.fs.rm_local_path(pathOfLocalFile)
+    if code.isTrue(code.fs.isLink(pathOfLocalFile)) then
+        vim.uv.fs_unlink(pathOfLocalFile)
+    else
+        if code.isTrue(code.fs.isDirectory(pathOfLocalFile)) then
+            local cmd = "rm -rf " .. pathOfLocalFile
+            code.log_debug_lite("cleanup run " .. pathOfLocalFile .. " by cmd:  })> " .. cmd .. " <({")
+            os.execute(cmd)
+        else
+            vim.uv.fs_unlink(pathOfLocalFile)
+        end
+    end
+end
+
+function code.path_join(...)
+    return vim.fs.normalize(code.str_join("/", ...))
+end
+
+function code.path_real(...)
+    local path = code.path_join(...)
+    return vim.uv.fs_realpath(path) -- https://neovim.io/doc/user/luvref.html#uv.fs_realpath()
+end
+
+--function code.mkdir(path)
+--    return vim.fn.mkdir(path)
+--end
+
+function code.mkdirs(path)
+    return vim.fn.mkdir(path, "p")
 end
 
 function code.shift_(n, args)
@@ -74,10 +135,6 @@ function code.str_join(delimiter, ...)
     return result
 end
 
-function code.path_join(...)
-    return vim.fs.normalize(code.str_join("/", ...))
-end
-
 function code.read_process_output(cmd)
     local process = assert(io.popen(cmd, 'r'))
     local processOut = assert(process:read('*a'))
@@ -86,33 +143,21 @@ function code.read_process_output(cmd)
     return processOut
 end
 
-function code.path_real(...)
-    local path = code.path_join(...)
-    return code.str_trim_end(code.read_process_output("test -e " .. path .. " && realpath " .. path .. " || echo -n " .. path))
-end
-
-function code.mkdir(path)
-    return vim.fn.mkdir(path)
-end
-
-function code.mkdirs(path)
-    return vim.fn.mkdir(path, "p")
-end
-
 function code.ensureRunDir ()
     code.UID = code.str_trim_end(code.read_process_output("id --user"))
-    code.RUN_DIR = "/run/user/" .. code.UID
-    if vim.fn.isdirectory(code.RUN_DIR) ~= 1 then
+    code.runDir = vim.uv.fs_realpath("/var/run/user/" .. code.UID)
+    if vim.fn.isdirectory(code.runDir) ~= 1 then
         code.exitWithErrorMsg(103, "runtime dir $RUN_DIR is not exist")
     end
 end
 
 function code.lookupOneRunCmd()
     code.ensureRunDir()
-    code.TOOL_I_D_E = "/opt/local/idea/bin/idea"
+    code.TOOL__IDE = "/opt/local/tool/ide/bin/app"
+    code.TOOL_IDE2 = "/opt/local/tool/ide2/bin/app"
     code.JAVA_HOME = "/opt/local/jdk"
     code.TOOL_ONE_RUN_CMD = "/opt/local/gradle/bin/gradle"
-    code.TOOL_ONE_RUN_HOME = code.path_real(code.RUN_DIR, "one_run_home")
+    code.TOOL_ONE_RUN_HOME = code.path_join(code.runDir, "_u_one_run_home")
     code.TOOL_ONE_RUN_DEFAULT_ARGS = "--gradle-user-home=" .. code.TOOL_ONE_RUN_HOME .. " --offline"
     -- code.TOOL_ONE_RUN_DEFAULT_ARGS = "--gradle-user-home=" .. code.TOOL_ONE_RUN_HOME .. " --offline --stacktrace"
 end
@@ -123,7 +168,7 @@ function code.ensureOneRunCmd()
         code.exitWithErrorMsg(153, "one_run_cmd " .. code.TOOL_ONE_RUN_CMD .. " is not exist")
     end
     code.mkdirs(code.TOOL_ONE_RUN_HOME)
-    os.execute("touch " .. code.TOOL_ONE_RUN_HOME .. "/file_from_app_by_scrip")
+    os.execute("touch " .. code.TOOL_ONE_RUN_HOME .. "/file_from_app_by_script")
     local gradleGeneratedDir = "/opt/local/gradle_generated/ready"
     local generatedJarsVersionFile = code.path_join(gradleGeneratedDir, "version")
     if vim.fn.isdirectory(gradleGeneratedDir) == 1 then
@@ -181,54 +226,64 @@ end
 
 function code.lookupDevPlace()
     code.lookupDevPlaceLite()
-    code.DEV_PLACE_ROOT_FULL_PATH = code.path_real(code.PLACE_OF_SCRIPT_FULL_PATH, "../../..")
-    code.DEV_PLACE_NAME = vim.fn.readfile(code.DEV_PLACE_ROOT_FULL_PATH .. "/.internal/place_config_desc")[1]
-    code.DEV_PLACE_GEN_DIR = code.path_join(code.DEV_PLACE_ROOT_FULL_PATH, "wwgen")
-    -- code. DEV_PLACE_GEN_TMP = code.path_join(code.DEV_PLACE_GEN_DIR, "tmp")
-    code.DEV_PLACE_GEN_LNK = code.path_join(code.DEV_PLACE_GEN_DIR, "lnk")
+    code.devPlaceRootFullPath = code.path_real(code.PLACE_OF_SCRIPT_FULL_PATH, "../../..")
+    code.devPlaceRootName = vim.fs.basename(code.devPlaceRootFullPath)                                    -- https://neovim.io/doc/user/lua.html#_lua-module:-vim.fs
+    code.devPlaceName = vim.fn.readfile(code.devPlaceRootFullPath .. "/.internal/place_config_desc")[1]
+    code.devPlaceUid = "_u_" .. code.devPlaceRootName .. "__" .. code.devPlaceName
+    code.devPlaceGenDir = code.path_join(code.devPlaceRootFullPath, "wwgen")
+    code.devPlaceGenLnkDir = code.path_join(code.devPlaceGenDir, "lnk")
 end
 
-function code.ensure_app_by_script_place()
-    local app_by_script_run_place_prefix = "orun_"
+function code.ensure_dev_place_gen_lnk()
+    code.log_debug("ensure_dev_place_gen_lnk 001:", code.devPlaceGenLnkDir)
+    code.log_debug("ensure_dev_place_gen_lnk 001:", fileOfMarkerLinked)
+    if vim.fn.isdirectory(code.devPlaceGenLnkDir) ~= 1 then
+        code.log_info("mk ", code.devPlaceGenLnkDir)
+        code.mkdirs(code.devPlaceGenLnkDir)
+    else
+        code.log_debug(code.devPlaceGenLnkDir, " exists")
+    end
+end
+
+function code.ensure_app_by_script_place(appPseudoName)
     code.lookupDevPlace()
     code.ensureRunDir()
-    code.RUN_PLACE_APP__TMP = code.path_join(code.RUN_DIR, app_by_script_run_place_prefix .. code.DEV_PLACE_NAME)
+    code.RUN_PLACE_APP__TMP = code.path_join(code.runDir, code.devPlaceUid, "_orun_" .. appPseudoName .. "_")
     code.APP_BY_SCRIPT_NAME = vim.fs.basename(code.path_real(code.PLACE_OF_SCRIPT_FULL_PATH, ".."))
     code.APP_BY_SCRIPT__DIR = code.path_join(code.RUN_PLACE_APP__TMP, code.APP_BY_SCRIPT_NAME)
-    code.APP_BY_SCRIPT__DIR_LINK = code.path_join(code.DEV_PLACE_GEN_LNK, "run_" .. code.APP_BY_SCRIPT_NAME)
+    code.APP_BY_SCRIPT__DIR_LINK = code.path_join(code.devPlaceGenLnkDir, "run_" .. appPseudoName .. "__" .. code.APP_BY_SCRIPT_NAME)
     code.APP_BY_SCRIPT_TOOL_FILE = code.path_join(code.APP_BY_SCRIPT__DIR, code.ONE_RUN_CMD_SCRIPT)
 
-    if vim.fn.isdirectory(code.DEV_PLACE_GEN_LNK) ~= 1 then
-        code.log_info("mk ", code.DEV_PLACE_GEN_LNK)
-        code.mkdirs(code.DEV_PLACE_GEN_LNK)
-    else
-        code.log_info(code.DEV_PLACE_GEN_LNK, " exists")
-    end
+    code.ensure_dev_place_gen_lnk()
+
     code.mkdirs(code.APP_BY_SCRIPT__DIR)
 
     local fileMarker = "file_marker_from_app_by_script"
-    local fileMarkerContent = code.DEV_PLACE_GEN_DIR
+    local fileMarkerContent = code.devPlaceGenDir
     vim.fn.writefile({ fileMarkerContent }, code.path_join(code.RUN_PLACE_APP__TMP, "file_from_app_by_script"))
     vim.fn.writefile({ fileMarkerContent }, code.path_join(code.APP_BY_SCRIPT__DIR, fileMarker))
     vim.fn.writefile({ "" }, code.path_join(code.APP_BY_SCRIPT__DIR, code.ONE_RUN_CMD_SETTINGS))
     -- vim.fn.writefile({ "" }, code.APP_BY_SCRIPT_TOOL_FILE)
     local appDirLink = code.path_join(code.APP_BY_SCRIPT__DIR_LINK, fileMarker)
-    code.log_info("appDirLink", appDirLink, "\n")
-    if (vim.fn.filereadable(appDirLink) ~= 1) or (fileMarkerContent ~= vim.fn.readfile(appDirLink)[1]) then
-        if (vim.fn.filereadable(appDirLink) == 1) and (fileMarkerContent ~= vim.fn.readfile(appDirLink)[1]) then
-            os.execute("rm " .. code.APP_BY_SCRIPT__DIR_LINK)
-        end
-        local linkAppRunDirCmd = "ln -s " .. code.APP_BY_SCRIPT__DIR .. " " .. code.APP_BY_SCRIPT__DIR_LINK
-        code.log_info("link by cmd:  })> " .. linkAppRunDirCmd .. " <({")
-        os.execute(linkAppRunDirCmd)
+    code.log_debug("appDirLink:", appDirLink, "\n")
+    -- code.log_info("appDirLink:", vim.fn.filereadable(appDirLink), "\n")                                   -- https://neovim.io/doc/user/builtin.html#filereadable()
+    if vim.fn.filereadable(appDirLink) ~= 1 or fileMarkerContent ~= vim.fn.readfile(appDirLink)[1] then
+        vim.uv.fs_unlink(code.APP_BY_SCRIPT__DIR_LINK)                                                       -- https://neovim.io/doc/user/luvref.html#uv.fs_unlink()
+        vim.uv.fs_symlink(code.APP_BY_SCRIPT__DIR, code.APP_BY_SCRIPT__DIR_LINK)                             -- https://neovim.io/doc/user/luvref.html#uv.fs_symlink()
     end
     code.ensureOneRunCmd()
 end
 
 function code.echoAppsByScriptStartCmd(args)
-    code.ensure_app_by_script_place()
+    local appPseudoName = args[1]
+    code.log_debug("name is:", appPseudoName)
+    if nil == appPseudoName then
+        code.exitWithErrorMsg(135, "name '" .. appPseudoName .. "' looks like undefined")
+    end
+    code.ensure_app_by_script_place(appPseudoName)
+    local _args = code.shift_one(args)
     local apps_list = {}
-    for _, v in ipairs(args) do
+    for _, v in ipairs(_args) do
         table.insert(apps_list, code.path_join(code.PLACE_OF_SCRIPT_FULL_PATH, v))
     end
     code.log_info("apps_list:", vim.inspect(apps_list), "\n")
@@ -236,72 +291,108 @@ function code.echoAppsByScriptStartCmd(args)
     local scriptTemplateName = vim.fs.basename(code.PLACE_OF_SCRIPT_FULL_PATH)
     code.writeScriptTemplate(scriptTemplateName, code.APP_BY_SCRIPT_TOOL_FILE)
     io.output():write("cd " .. code.APP_BY_SCRIPT__DIR_LINK .. " && ")
-    code.echoOneRunCmd(args)
+    code.echoOneRunCmd(_args)
+end
+
+function code.ensureLinkToDirValid(pathOfLinkToDir, fileNameOfMarker, fileMarkerContent)
+    if code.isTrue(code.fs.isLink(pathOfLinkToDir)) then
+        local fileOfMarkerLinked = code.path_join(pathOfLinkToDir, fileNameOfMarker)
+        code.log_debug("ensureLinkToDirValid 001:", fileOfMarkerLinked)
+        --code.log_debug("ensureLinkToDirValid 001:", vim.fn.filereadable(fileOfMarkerLinked))
+        --code.log_debug("ensureLinkToDirValid 001:", vim.uv.fs_realpath(fileOfMarkerLinked))
+        if vim.fn.filereadable(fileOfMarkerLinked) == 1 and fileMarkerContent == vim.fn.readfile(fileOfMarkerLinked)[1] then
+            code.log_debug("ensureLinkToDirValid 002")
+            return 1
+        else
+            code.log_debug("ensureLinkToDirValid 003")
+        end
+    end
+    code.log_debug("ensureLinkToDirValid 004")
+    code.fs.rm_local_path(pathOfLinkToDir)
+    return 0
+end
+
+function code.cleanupDirToBeLinked(dirPath, fileNameOfMarker, fileMarkerContent)
+    code.fs.rm_local_path(dirPath)
+    code.mkdirs(dirPath)
+    vim.fn.writefile({ fileMarkerContent }, code.path_join(dirPath, fileNameOfMarker))
 end
 
 function code.link_out_place(args)
     code.lookupDevPlace()
     code.ensureRunDir()
-    local RUN_OUT_DIR = code.path_join(code.RUN_DIR, "out_" .. code.DEV_PLACE_NAME)
-    local fileOfMarker = code.path_join(RUN_OUT_DIR, "file_from_app_by_script")
-    local PRJ_OUT = code.path_join(code.DEV_PLACE_GEN_LNK, "out")
-
-    code.log_info_permanent("RUN_OUT_DIR    ", RUN_OUT_DIR)
-    code.log_info_permanent("PRJ_OUT        ", PRJ_OUT)
-
-    code.log_debug("PRJ_OUT=" .. PRJ_OUT .. " ;  if [ -L \"$PRJ_OUT\" ]; then  echo \"cleanup link $PRJ_OUT\" ; rm \"$PRJ_OUT\" ; fi")
-    local cmd_rm_link = "if [ -L '" .. PRJ_OUT .. "' ]; then  echo 'cleanup link " .. PRJ_OUT .. "' >&2 ; rm '" .. PRJ_OUT .. "' ; fi"
-    code.log_info("cleanup link " .. PRJ_OUT .. " by cmd:  })> " .. cmd_rm_link .. " <({")
-    os.execute(cmd_rm_link)
-
-    if vim.fn.isdirectory(PRJ_OUT) == 1 then
-        local cmd = "rm -rf " .. PRJ_OUT
-        code.log_info("cleanup dir " .. PRJ_OUT .. "by cmd:  })> " .. cmd .. " <({")
-        os.execute(cmd)
-    end
-
-    if vim.fn.isdirectory(RUN_OUT_DIR) == 1 then
-        if vim.fn.filereadable(fileOfMarker) == 1 then
-            local cmd = "rm -rf " .. RUN_OUT_DIR
-            code.log_info("cleanup run " .. RUN_OUT_DIR .. "by cmd:  })> " .. cmd .. " <({")
-            os.execute(cmd)
-        end
-    end
-
-    code.mkdirs(code.DEV_PLACE_GEN_LNK)
-    code.mkdirs(RUN_OUT_DIR)
-    vim.fn.writefile({ "" }, fileOfMarker)
-    local cmd_out_link = "ln -s " .. RUN_OUT_DIR .. " " .. PRJ_OUT
-    code.log_info("link by cmd:})>" .. cmd_out_link .. "<({")
-    os.execute(cmd_out_link)
+    code.link_place_default("out")
 end
 
-function code.open_in_ide(args)
+function code.link_place_default(placeName)
+    code.link_place(placeName, "file_from_app_by_script", code.devPlaceGenDir)
+end
+
+function code.link_place(placeName, fileNameOfMarker, fileMarkerContent)
+    local dirInRun = code.path_join(code.runDir, code.devPlaceUid, "_" .. placeName .. "_")
+    local dirInPrj = code.path_join(code.devPlaceGenLnkDir, placeName)
+
+    code.log_debug("link_place dirInRun ", vim.fn.isdirectory(dirInRun), dirInRun)
+    code.log_debug("link_place dirInPrj ", vim.fn.isdirectory(dirInPrj), dirInPrj)
+
+    code.cleanupDirToBeLinked(dirInRun, fileNameOfMarker, fileMarkerContent)
+
+    code.ensure_dev_place_gen_lnk()
+
+    if code.isTrue(code.ensureLinkToDirValid(dirInPrj, fileNameOfMarker, fileMarkerContent)) then
+        code.log_debug("looks like link :", dirInPrj, "to:", dirInRun, " is valid")
+    else
+        code.log_debug("link from:", dirInRun, "to:", dirInPrj)
+        vim.uv.fs_symlink(dirInRun, dirInPrj)  -- https://neovim.io/doc/user/luvref.html#uv.fs_symlink()
+    end
+end
+
+function code.open_in_ide(args, tool_ide)
     code.link_out_place(args)
+    code.link_place("tool_info", "file_from_app_by_script_tool_ide", tool_ide .. ".sh")
+    code.link_place_default("tool_run_store")
+    io.output():write(tool_ide .. " -Dnosplash=true " .. code.path_join(code.devPlaceRootFullPath, code.devPlaceName))
+end
+
+function code.open_in_ide1(args)
     code.lookupOneRunCmd()
-    io.output():write(code.TOOL_I_D_E .. " -Dnosplash=true " .. code.path_join(code.DEV_PLACE_ROOT_FULL_PATH, code.DEV_PLACE_NAME))
+    code.open_in_ide(args, code.TOOL__IDE)
+end
+
+function code.open_in_ide2(args)
+    code.lookupOneRunCmd()
+    code.open_in_ide(args, code.TOOL_IDE2)
 end
 
 local debug = {}
+
+function debug.oneLite(args)
+    --print(vim.inspect(args), "\n")
+    ----https://neovim.io/doc/user/luvref.html#uv.fs_symlink()
+    --print(vim.inspect(vim.uv.fs_realpath), "\n")
+    --print(vim.inspect(vim.uv.fs_symlink), "\n")
+    --print(vim.inspect(vim.uv), "\n")
+end
 
 function debug.one(args)
     print(vim.inspect(args), "\n")
     print("SCRIPT                    ", arg[0])
 
-    code.ensure_app_by_script_place()
+    code.ensure_app_by_script_place("tmp_one")
     code.echoOneRunCmd(args)
 
     print("APP_BY_SCRIPT_NAME        ", code.APP_BY_SCRIPT_NAME)
     print("APP_BY_SCRIPT_TOOL_FILE   ", code.APP_BY_SCRIPT_TOOL_FILE)
     print("APP_BY_SCRIPT__DIR        ", code.APP_BY_SCRIPT__DIR)
     print("APP_BY_SCRIPT__DIR_LINK   ", code.APP_BY_SCRIPT__DIR_LINK)
-    print("DEV_PLACE_GEN_DIR         ", code.DEV_PLACE_GEN_DIR)
-    print("DEV_PLACE_GEN_TMP         ", code.DEV_PLACE_GEN_LNK)
-    print("DEV_PLACE_NAME            ", code.DEV_PLACE_NAME)
-    print("DEV_PLACE_ROOT_FULL_PATH  ", code.DEV_PLACE_ROOT_FULL_PATH)
+    print("DEV_PLACE_GEN_DIR         ", code.devPlaceGenDir)
+    print("DEV_PLACE_GEN_TMP         ", code.devPlaceGenLnkDir)
+    print("devPlaceName              ", code.devPlaceName)
+    print("devPlaceRootFullPath      ", code.devPlaceRootFullPath)
+    print("devPlaceUid               ", code.devPlaceUid)
     print("JAVA_HOME                 ", code.JAVA_HOME)
     print("PLACE_OF_SCRIPT_FULL_PATH ", code.PLACE_OF_SCRIPT_FULL_PATH)
-    print("RUN_DIR                   ", code.RUN_DIR)
+    print("RUN_DIR                   ", code.runDir)
     print("RUN_PLACE_APP__TMP        ", code.RUN_PLACE_APP__TMP)
     print("TOOL_ONE_RUN_CMD          ", code.TOOL_ONE_RUN_CMD)
     print("TOOL_ONE_RUN_DEFAULT_ARGS ", code.TOOL_ONE_RUN_DEFAULT_ARGS)
@@ -317,11 +408,13 @@ end
 function code.main()
     local actions = {
         ["debug"]                      --[[]] = debug.one,
+        --["debug"]                      --[[]] = debug.oneLite,
         ["echoOneRunCmd"]              --[[]] = code.echoOneRunCmd,
         ["echoArgs"]                   --[[]] = code.echoArgs,
         ["echoAppsByScriptStartCmd"]   --[[]] = code.echoAppsByScriptStartCmd,
         ["link_out_place"]             --[[]] = code.link_out_place,
-        ["open_in_ide"]                --[[]] = code.open_in_ide,
+        ["open_in_ide"]                --[[]] = code.open_in_ide1,
+        ["open_in_ide2"]               --[[]] = code.open_in_ide2,
     }
     local actionName = arg[1]
     if nil == actionName then

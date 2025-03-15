@@ -1,3 +1,4 @@
+@Suppress("RemoveRedundantQualifierName")
 object UtilSelectModuleItems : NodeItems() {
     private val util = UtilTree
 
@@ -11,7 +12,8 @@ object UtilSelectModuleItems : NodeItems() {
             val dependency: List<NodePath>,
             val allDependency: List<NodePath>,
             val libraries: List<LibraryContent>,
-            val copyContentOf: NodePath?
+            val copyContentOf: NodePath?,
+            val renameTo: String?,
         )
 
         private val map = mutableMapOf<NodeItemsDesc.ItemContent, In>()
@@ -38,34 +40,34 @@ object UtilSelectModuleItems : NodeItems() {
             }
         }
 
-        fun forEach(action: (Out) -> Unit) {
+        fun itemsWithDetectedAllDependency(ignoreDep: List<NodeItemsDesc.ItemContent> = emptyList()): List<WithDetectedAllDependency> {
             val itemsWithDetectedDependency = items.map { itemIn ->
                 val dependency = mutableListOf<NodePath>()
                 val libraries = mutableListOf<LibraryContent>()
-                itemIn.itemContent.dependency.forEach { if (it is LibraryContent) libraries.add(it) else dependency.add(get(it).path) }
+                itemIn.itemContent.dependency.forEach { if (it is LibraryContent) libraries.add(it) else { val depItemIn: In = get(it); if (depItemIn.itemContent !in ignoreDep) { dependency.add(depItemIn.path) } } }
                 WithDetectedDependency(itemIn, dependency, libraries)
                     .also { flatMapOfDependency[itemIn.path.fs] = it }
             }
 
-            val itemsWithDetectedAllDependency = itemsWithDetectedDependency.map { item ->
+            return itemsWithDetectedDependency.map { item ->
                 val allDeps: MutableSet<NodePath> = mutableSetOf()
                 fillDepModuleNode(allDeps, item.dependency)
                 WithDetectedAllDependency(item.itemIn, item.dependency, allDeps.sortedBy { it.fs }, item.libraries)
             }
+        }
 
-            itemsWithDetectedAllDependency.forEach {
-                action(
-                    Out(it.itemIn.path,
-                        it.itemIn.itemContent,
-                        it.dependency,
-                        it.allDependency,
-                        it.libraries,
-                        it.itemIn.itemContent.contentOf?.let { from ->
-                            if (it.itemIn.itemContent.isReallyCopy) get(from).path else null
-                        }
-                    )
-                )
-            }
+        fun forEachSmart(predicate: (Out) -> Boolean = { true }, action: (Out) -> Unit) = itemsWithDetectedAllDependency().forEach {
+            Out(
+                it.itemIn.path,
+                it.itemIn.itemContent,
+                it.dependency,
+                it.allDependency,
+                it.libraries,
+                it.itemIn.itemContent.contentOf?.let { from ->
+                    if (it.itemIn.itemContent.isReallyCopy) get(from).path else null
+                },
+                it.itemIn.itemContent.renameTo,
+            ).takeIf(predicate)?.let(action)
         }
     }
 
@@ -86,7 +88,7 @@ object UtilSelectModuleItems : NodeItems() {
         fun <MainObj : NodeItemsDesc.Node> fillHolderOfItems(mainObj: MainObj): HolderOfModules {
             val mainObjectsTree = util.objectsTree(mainObj, NodeItemsDesc.Node.Unit)
             mainObjectsTree.run {
-                println("fillHolderOfItems mainNode=$mainNode")
+                // println("fillHolderOfItems mainNode=$mainNode")
                 if (mainObj is Node.SrcPlace) mainNode.children.forEach<NodeItemsDesc.Node.Item> { path, _, obj, fullPath ->
                     onItem(mainObj, path, itemContent(obj), fullPath)
                 }

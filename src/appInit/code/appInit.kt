@@ -1,58 +1,72 @@
-@Suppress("ClassName", "unused", "PropertyName", "MoveLambdaOutsideParentheses")
+@Suppress(
+    "ClassName",
+    "unused",
+    "PropertyName",
+    "PrivatePropertyName",
+    "MoveLambdaOutsideParentheses",
+)
 object appInit : NodeItems() {
     class Template {
-        open class suit_board_code : _General() {
-            val board_code = _Py({ of(type.BoardCode) })
-            val code = _____KtJv({ of(type.JvKt) depends on(src.appInit.lib.dev_project, library.jSerialComm_2_9_2) })
-        }
-
         open class SimpleApp(private val lib: Lib = Lib()) : _Kt({ of(type.KtCode) depends on(lib.one, lib.two) }) {
             class Lib : _General() {
-                val one = _Kt({ of(type.KtCode) })
-                val two = _Kt({ of(type.KtCode) })
+                val one = ___Kt({ of(type.KtCode) })
+                val two = ___Kt({ of(type.KtCode) })
             }
         }
 
-        @Suppress("unused", "PropertyName")
-        open class appInit(val lib: Lib = Lib(), val plus: Plus = Plus(lib)) : _Kt({ of(type.KtCode) depends on(lib.node_tree, lib.dev_project) }) {
-            open class Lib : _General() {
-                val node_tree = ___Kt({ of(type.KtCode) })
-                val dev_project = _Kt({ of(type.KtCode) })
+        open class appInit(val lib: Lib = Lib(), val plus: Plus = Plus(lib)) : _Kt({ of(type.KtCode) depends on(lib.node_tree, lib.dev_project_lookup) }) {
+            class Lib : ____________General() {
+                val local_place = _____________Kt({ of(type.KtCode) })
+                val local_properties = ________Kt({ of(type.KtCode) depends on(local_place) })
+                val dev_project = _____________Kt({ of(type.KtCode) depends on(local_properties) })
+                val dev_project_lookup = ______Kt({ of(type.KtCode) depends on(dev_project) })
+                val node_tree = _______________Kt({ of(type.KtCode) depends on(local_place) })
             }
 
-            open class Plus(libOfAppInit: Lib) : _General() {
+            class Plus(lib: Lib, val tool: Tool = Tool(lib)) : _General() {
                 //private val app0 = SimpleApp()
                 //private val app1 = _Kt({ of(type.Kt) }) // unusable by 'app_simple_by_gradle', just for example, only with 'src dir' 'code' by 'of(type.KtCode)' implemented now
                 //private val app2 = _Kt({ of(type.KtCode) })
                 //private val app3 = SimpleApp()
-                val local_properties_generate_code = _Kt({ of(type.Kt) depends on(libOfAppInit.dev_project) })
-                val quick_run_main = _________________Kt({ of(type.Kt) depends on(libOfAppInit.dev_project) })
-                private val quick_code = _____________Kt({ of(type.Kt) depends on(quick_run_main) })
-                private val scriptTemplate = _________Kt({ })
+                private val local_properties_generate_code = ___Kt({ of depends on(tool.dev_project_tool_info, tool.local_system) })
+                private val quick_code = _____________________KtJv({
+                    of(type.JvKt) depends on(tool.main_object, tool.quick_named_string, tool.local_system, tool.dev_project_tool_info, tool.dev_project_tool_run_place)
+                })
+                private val quick_code_debug = _________________Kt({ of depends on(quick_code) })
+                private val scriptTemplate = ___________________Kt({ })
+
+                class Tool(lib: Lib) : _General() {
+                    val quick_named_string = ___________Kt({ })
+                    val dev_project_tool_info = ________Kt({ of depends on(lib.dev_project_lookup) })
+                    val dev_project_tool_run_place = ___Kt({ of depends on(lib.dev_project) })
+                    val main_object = __________________Kt({ of depends on(lib.dev_project_lookup, quick_named_string) })
+                    val exec_process = _________________Kt({ of depends on(lib.local_place) })
+                    val local_user_home = ______________Kt({ of depends on(lib.local_place) })
+                    val local_system = _________________Kt({ of depends on(exec_process, local_user_home) })
+                }
             }
         }
     }
 
     object library {
-        val jSerialComm_2_9_2 = _Library("jSerialComm-2.9.2") //https://github.com/Fazecast/jSerialComm/releases/tag/v2.11.0
+        val ide_lib = ___Library("ide_lib")
+    }
+
+    object srcOf {
+        val local_place = ____l(src).appInit.lib.local_place
+        val dev_project = ____l(src).appInit.lib.dev_project
+        val dev_project_lookup = src.appInit.lib.dev_project_lookup
+        val dev_tool_info = __l(src).appInit.plus.tool.dev_project_tool_info
+        val dev_tool_run_place = src.appInit.plus.tool.dev_project_tool_run_place
+        val quick_named_string = src.appInit.plus.tool.quick_named_string
+        val main_object = ____l(src).appInit.plus.tool.main_object
+        val exec_process = ___l(src).appInit.plus.tool.exec_process
+        val local_user_home = l(src).appInit.plus.tool.local_user_home
     }
 
     object src : SrcPlace() {
         val appInit = Template.appInit()
-
-        object board_code : Template.suit_board_code()
     }
-
-    val LocalFile.deleteIfExist: Boolean
-        get() {
-            if (exists()) {
-                if (isDirectory) deleteRecursively()
-                else delete()
-                println("remove: $absolutePath")
-                return true
-            }
-            return false
-        }
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -60,7 +74,7 @@ object appInit : NodeItems() {
         val util = UtilSelectModuleItems
 
         val devProject = DevProjectLookup.by(args)
-        val place = devProject.rootStore.file
+        val place = devProject.rootPlace
         val placeSrc = devProject.src
         val prjName = devProject.name
 
@@ -68,10 +82,10 @@ object appInit : NodeItems() {
 
         val modulesRelativePath = mutableListOf<String>()
         val holder = util.select(src)
-        holder.forEach { item ->
+        holder.forEachSmart { item ->
             // /* if (node.childrenIdx.isEmpty()) */ LocalFile(placeSrc, path.fs).mkdirs()
             val moduleItemType = item.module.type
-            println("Init.main ${item.path} ${moduleItemType is DefaultTypes.ItemType}")
+            // println("Init.main  ${item.path} ${moduleItemType is DefaultTypes.ItemType}")
             if (moduleItemType is DefaultTypes.ItemType) {
                 modulesRelativePath.add(utilModulesXml.moduleGeneric(prjName, place, placeSrc.name, item.path, moduleItemType, item.allDependency, item.libraries))
                 val moduleDir = placeSrc.file(item.path.fs).apply { mkdirs() }
@@ -79,7 +93,7 @@ object appInit : NodeItems() {
                     val from = placeSrc.file(fs)
                     println("Init.main  copy from : $from to : $moduleDir")
                     from.walk().onEnter {file -> when (file.name) {//@formatter:off
-                        ".gradle", "build" -> {                  file.deleteIfExist; false}
+                        ".gradle", "build" -> { LocalPlace.of(file).deleteIfExist(); false}
                         ".idea", ".git" -> { println("skip walk: $file"); false}
                         else -> true                 }
                     }.forEach {}
@@ -88,12 +102,24 @@ object appInit : NodeItems() {
                         OnErrorAction.SKIP
                     })
                 }
+
+            }
+        } //@formatter:on
+
+        println("Init.main")
+        holder.forEachSmart({ item -> item.module.type is DefaultTypes.ItemType }) { item ->
+            val modulePlace = placeSrc.place(item.path.fs).apply { mkdirs() }
+            item.renameTo?.trim()?.takeIf { it.isNotEmpty() && modulePlace.name != it }?.let {
+                val moduleDirNew = modulePlace.parent.file(it)
+                println("Init.main $modulePlace renameTo $moduleDirNew")
+                modulePlace.file.renameTo(moduleDirNew)
             }
         }
+
         println("Init.main modules count ${modulesRelativePath.size}")
         if (modulesRelativePath.isNotEmpty()) {
             val modulesXmlStr = utilModulesXml.modulesXml(modulesRelativePath)
-            val modulesFile = LocalFile(place, "$prjName/.idea/modules.xml")
+            val modulesFile = place.file("$prjName/.idea/modules.xml")
             println("Init.main $modulesFile")
             modulesFile.apply { parentFile.mkdirs() }.writeText(modulesXmlStr)
         }

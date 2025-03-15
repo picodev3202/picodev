@@ -9,30 +9,48 @@ exitWithErrorMsg() {
   exit "$1"
 } >&2
 
-SCRIPT_FULL_PATH="$(realpath "$0")"
+warningMsg() {
+  echo "$*"
+} >&2
 
-cd "$(dirname "$SCRIPT_FULL_PATH")" || exitWithErrorMsg 102 "dirname of $SCRIPT_FULL_PATH not found"
+THIS_SCRIPT_FULL_PATH="$(realpath "$0")"
 
-. app_sh_lib/app_runtime_lib.sh
+cd "$(dirname "$THIS_SCRIPT_FULL_PATH")" || exitWithErrorMsg 102 "dirname of $THIS_SCRIPT_FULL_PATH not found"
 
-lookupOneRunCmd # and ensureRunDir() ... $RUN_DIR
+UID=$(id --user)
+RUN_DIR=/var/run/user/$UID
+if [ ! -d "$RUN_DIR" ]; then
+  exitWithErrorMsg 103 "runtime dir $RUN_DIR is not exist"
+fi
+
+TOOL_ONE_RUN_CMD=/opt/local/gradle/bin/gradle
+TOOL_ONE_RUN_HOME="$RUN_DIR/_u_one_run_home"
+TOOL_ONE_RUN_DEFAULT_ARGS="--gradle-user-home=$TOOL_ONE_RUN_HOME --offline"
 
 if [ -d "$TOOL_ONE_RUN_HOME" ]; then
   if [ -e "$TOOL_ONE_RUN_HOME"/file_from_app_by_script ]; then
     echo cleanup "$TOOL_ONE_RUN_HOME"
-
+    export JAVA_HOME=/opt/local/jdk
     # shellcheck disable=SC2086
     "$TOOL_ONE_RUN_CMD" $TOOL_ONE_RUN_DEFAULT_ARGS --stop
     rm -rf "$TOOL_ONE_RUN_HOME"
   fi
 fi
 
-for one_run_dir in "$RUN_DIR"/orun_* "$RUN_DIR"/onerun_*; do
-  if [ -e "$one_run_dir"/file_from_app_by_script ]; then
-    echo cleanup "$one_run_dir"
-    rm -rf "$one_run_dir"
+for one_run_dir in "$RUN_DIR"/_u_* ; do
+  for otherDir in "$one_run_dir"/_orun_* ; do
+    if [ -e "$otherDir"/file_from_app_by_script ]; then
+      echo cleanup "$otherDir"
+      rm -rf "$otherDir"
+    fi
+  done
+  if [ -e "$one_run_dir"/_out_/file_from_app_by_script ]; then
+    echo cleanup "$one_run_dir"/_out_/
+    rm -rf "$one_run_dir"/_out_/
   fi
 done
+
+sh link_out_place
 
 #for item0 in one two ii3; do mkdir --parents "$RUN_DIR"/orun_$item0/   ; touch "$RUN_DIR"/orun_$item0/file_from_app_by_script;   done
 #for item0 in one two ii4; do mkdir --parents "$RUN_DIR"/onerun_$item0/ ; touch "$RUN_DIR"/onerun_$item0/file_from_app_by_script; done

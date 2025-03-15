@@ -1,6 +1,5 @@
 object DefaultTypes {
 
-    @Suppress("SpellCheckingInspection")
     abstract class ItemType(
         val srcs: List<Pair<String, Pair<String, (String, String) -> String>>>,
         val withExample: Boolean,

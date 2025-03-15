@@ -11,11 +11,14 @@
 
 ###
 
+THIS_SCRIPT_FULL_PATH="$(realpath "$0")"
+THIS_SCRIPT_NAME="$(basename "$THIS_SCRIPT_FULL_PATH")"
+
 CMD='nvim --clean -l'
 SCRIPT="$(dirname "$(realpath "$0")")"/lua/app.lua
 
-#RESULT_CMD=$($CMD "$SCRIPT" echoAppsByScriptStartCmd '..' '../plus/app0' '../plus/app1' '../plus/app2' '../plus/app3' )
-RESULT_CMD=$($CMD "$SCRIPT" echoAppsByScriptStartCmd      '../plus/app0' '../plus/app1' '../plus/app2' '../plus/app3' '../../../wwgen/tmp/app5' )
+#RESULT_CMD=$($CMD "$SCRIPT" echoAppsByScriptStartCmd "$THIS_SCRIPT_NAME"  '..' '../plus/app0' '../plus/app1' '../plus/app2' '../plus/app3' )
+RESULT_CMD=$($CMD "$SCRIPT" echoAppsByScriptStartCmd "$THIS_SCRIPT_NAME"       '../plus/app0' '../plus/app1' '../plus/app2' '../plus/app3' '../../../wwgen/tmp/app5' )
 
 echo "RESULT_CMD: })>$RESULT_CMD<({"
 sh -c "$RESULT_CMD $*"

@@ -59,7 +59,7 @@ object UtilTree : UtilOfJClass.Lib() {
                                 val fieldPath: List<String> = path + field.name
                                 nodeTreeBuilder.put(fieldPath, fieldVal)
                                 forEachValueOfField(fieldVal, fieldPath) { path, fieldValue ->
-                                    if (fieldValue is Node){
+                                    if (fieldValue is Node) {
                                         nodeTreeBuilder.put(path, fieldValue)
                                     }
                                 }
@@ -78,7 +78,7 @@ object UtilTree : UtilOfJClass.Lib() {
                                 val fieldPath: List<String> = path + field.name
                                 nodeTreeBuilder.put(fieldPath, fieldVal)
                                 forEachValueOfField(fieldVal, fieldPath) { path, fieldValue ->
-                                    if (fieldValue is Node){
+                                    if (fieldValue is Node) {
                                         nodeTreeBuilder.put(path, fieldValue)
                                     }
                                 }
@@ -99,15 +99,15 @@ object UtilTree : UtilOfJClass.Lib() {
         } ?: TODO("index of root object not found")
     }
 
-    fun objectsTree(rootObject: LocalFile): ObjectsTree<LocalFile> {
-        val empty = LocalFile("/tmp/empty")
-        val nodeTreeBuilder = NodeTreeBuilder(empty)
+    @Suppress("unused")
+    fun objectsTree(rootObject: LocalPlace): ObjectsTree<LocalPlace> {
+        val nodeTreeBuilder = NodeTreeBuilder(LocalPlace.empty)
 
-        rootObject.walk().forEach {
+        rootObject.file.walk().forEach {
             if (it.isDirectory) {
-                val separatorChar = LocalFile.separatorChar
+                val separatorChar = LocalPlace.separatorChar
                 val path = it.path.trim(separatorChar).split(separatorChar).toList()
-                nodeTreeBuilder.put(path, it)
+                nodeTreeBuilder.put(path, LocalPlace.of(it))
             }
         }
         var rootIndex: NodeOfTree.Index? = null

@@ -1,6 +1,6 @@
 //
 fun main(args: Array<String>) = LocalPropertiesQuickHelperTool.UpdateHelper(args) {
-    LocalPropertiesQuickHelperTool.highlightsParamsOrder // ... to append 'highlightSrcN'
+    LocalPropertiesQuickHelperTool.highlightsParamsOrder // ... to append 'highlight...'
     localPathToCurrentFile.."appInit/plus/local_properties_generate_code/kt/eee.kt"
     highlight..""
     highlights(listOf(

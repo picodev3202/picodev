@@ -82,7 +82,7 @@ ${deps.joinToString("") { "$it\n" }}  </component>
 
     fun moduleGeneric(
         prjName: String,
-        place: LocalFile,
+        place: LocalPlace,
         srcStr: String,
         path: NodePath,
         moduleItemType: DefaultTypes.ItemType,
@@ -96,12 +96,12 @@ ${deps.joinToString("") { "$it\n" }}  </component>
         for (srcOne in moduleItemType.srcs) {
             val (srcRaw, example) = srcOne
             val src = srcRaw.trim()
-            val scrDir = LocalFile(place, "$srcStr/$pathStr/$src")
+            val scrDir = place.place("$srcStr/$pathStr/$src")
             if (!scrDir.exists()) {
                 scrDir.mkdirs()
                 if (moduleItemType.withExample) {
                     val (nm, content) = example
-                    LocalFile(scrDir, nm).apply {
+                    scrDir.file(nm).apply {
                         writeText(content(nameWithoutExtension, "from $nameWithoutExtension $pathStr"))
                     }
                 }
@@ -111,8 +111,8 @@ ${deps.joinToString("") { "$it\n" }}  </component>
         }
 
         val moduleRelativePath = "modules/gen/${path.list[0]}/${path.ide}.iml"
-        val moduleFile = LocalFile(place, "$prjName/$moduleRelativePath")
-        println("IdeModulesXml.moduleGeneric $moduleFile")
+        val moduleFile = place.file("$prjName/$moduleRelativePath")
+        // println("IdeModulesXml.moduleGeneric $moduleFile")
         moduleFile.apply { parentFile.mkdirs() }
             .writeText(
                 moduleItemType.moduleXmlStr(contentUrl, srcsUrls,

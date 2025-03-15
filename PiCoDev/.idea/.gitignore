@@ -1,5 +1,8 @@
 
 /shelf/
+/caches/*
+
+/runConfigurations/*
 
 /uiDesigner.xml
 /workspace.xml

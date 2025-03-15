@@ -1,3 +1,10 @@
+@Suppress(
+    "FunctionName",
+    "PropertyName",
+    "ClassName",
+    "unused",
+    "RemoveRedundantQualifierName"
+)
 abstract class NodeItems {
     object type {
         val KtCode = DefaultTypes.data.KtCode
@@ -16,17 +23,20 @@ abstract class NodeItems {
             interface KtJv : Content.Type
         }
 
-        // @formatter:off
+        //@formatter:off
         interface Content {
             interface Type{ object Empty:Type }
             val type: Type
         }
         interface CopyOf {
             val contentOf: Content?
-            val isReallyCopy :Boolean
+            val isReallyCopy: Boolean
         }
-        interface ItemContent : Content , CopyOf {
-            val nodeFrom:Any
+        interface RenameTo {
+            val renameTo: String?
+        }
+        interface ItemContent : Content, CopyOf, RenameTo {
+            val nodeFrom: Any
             val dependency: List<ItemContent>
             override val contentOf: ItemContent?
         }
@@ -41,7 +51,7 @@ abstract class NodeItems {
             }
         }
 
-        // @formatter:on
+        //@formatter:on
 
 //        fun readType(n: Node) = content(n).type
 //        fun content(n: Node): Content {
@@ -69,13 +79,44 @@ abstract class NodeItems {
         }
     }
 
+    fun <T> _______________l(item: T) = item
+    fun <T> _____________l(item: T) = item
+    fun <T> ____________l(item: T) = item
+    fun <T> ___________l(item: T) = item
+    fun <T> __________l(item: T) = item
+    fun <T> _________l(item: T) = item
+    fun <T> ________l(item: T) = item
+    fun <T> _______l(item: T) = item
+    fun <T> ______l(item: T) = item
+    fun <T> _____l(item: T) = item
+    fun <T> ____l(item: T) = item
+    fun <T> ___l(item: T) = item
+    fun <T> __l(item: T) = item
+    fun <T> _l(item: T) = item
+    fun <T> l(item: T) = item
+
     class LibraryContent(val name: String, override val nodeFrom: Any) : NodeItemsDesc.ItemContent {
         override val dependency: List<NodeItemsDesc.ItemContent> = emptyList()
         override val contentOf: NodeItemsDesc.ItemContent? = null
         override val type = NodeItemsDesc.Content.Type.Empty
         override val isReallyCopy: Boolean = false
+        override val renameTo: String = ""
     }
 
+    open class ________________Library(name: String) : _Library(name)
+    open class _______________Library(name: String) : _Library(name)
+    open class ______________Library(name: String) : _Library(name)
+    open class _____________Library(name: String) : _Library(name)
+    open class ___________Library(name: String) : _Library(name)
+    open class __________Library(name: String) : _Library(name)
+    open class _________Library(name: String) : _Library(name)
+    open class ________Library(name: String) : _Library(name)
+    open class _______Library(name: String) : _Library(name)
+    open class ______Library(name: String) : _Library(name)
+    open class _____Library(name: String) : _Library(name)
+    open class ____Library(name: String) : _Library(name)
+    open class ___Library(name: String) : _Library(name)
+    open class __Library(name: String) : _Library(name)
     open class _Library(name: String) : NodeItemsDesc.Node.Item.Jv, NodeItemsDesc.Node.Item.Kt {
         override val contentJv = LibraryContent(name, this)
         override val contentKt = contentJv
@@ -85,7 +126,24 @@ abstract class NodeItems {
 
     open class _Node : NodeItemsDesc.Node
 
+    open class _________________General : _General()
+    open class ________________General : _General()
+    open class _______________General : _General()
+    open class ______________General : _General()
+    open class _____________General : _General()
+    open class ____________General : _General()
+    open class ___________General : _General()
+    open class __________General : _General()
+    open class _________General : _General()
+    open class ________General : _General()
+    open class _______General : _General()
+    open class ______General : _General()
+    open class _____General : _General()
+    open class ____General : _General()
+    open class ___General : _General()
+    open class __General : _General()
     open class _General : Internal.general.O({ }) // maybe '_Empty' or maybe '_Generic' ...
+    open class _General_(action: Internal.general.B.() -> Unit) : Internal.general.O(action)
 
     open class _____________Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
     open class ____________Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
@@ -115,6 +173,21 @@ abstract class NodeItems {
     open class __Py(action: Internal.py.B.() -> Unit) : _Py(action)
     open class _Py(action: Internal.py.B.() -> Unit) : Internal.py.O(action)
 
+    open class ____________________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
+    open class ___________________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
+    open class __________________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
+    open class _________________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
+    open class ________________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
+    open class _______________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
+    open class ______________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
+    open class _____________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
+    open class ____________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
+    open class ___________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
+    open class __________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
+    open class _________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
+    open class ________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
+    open class _______________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
+    open class ______________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
     open class _____________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
     open class ____________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
     open class ___________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
@@ -137,6 +210,37 @@ abstract class NodeItems {
     open class __Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
     open class _Kt(action: Internal.kt.B.() -> Unit) : Internal.kt.O(action)
 
+    open class ________Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
+    open class _______Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
+    open class ______Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
+    open class _____Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
+    open class ____Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
+    open class ___Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
+    open class __Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
+    open class _Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt({ of depends dependsOn })
+    //fun of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) :Internal.kt.B.() -> Unit { }
+
+    open class __________________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class _________________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class ________________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class _______________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class ______________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class _____________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class ____________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class ___________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class __________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class _________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class ________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class _______________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class ______________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class _____________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class ____________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class ___________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class __________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class _________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class ________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class _______________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
+    open class ______________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
     open class _____________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
     open class ____________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
     open class ___________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
@@ -164,6 +268,7 @@ abstract class NodeItems {
             val _dependency = mutableListOf<O>()
             var _copyContentOf: O? = null
             var _isReallyCopy = false
+            var _renameTo: String? = null
 
             infix fun ParamsBuilder<O, T>.d(list: Array<out O>) = _dependsOn(list)
             infix fun ParamsBuilder<O, T>.dep(list: Array<out O>) = _dependsOn(list)
@@ -186,17 +291,23 @@ abstract class NodeItems {
 
             val ParamsBuilder<O, T>.highlights get() = Unit
 
-            fun ParamsBuilder<O, T>.cp(from: O, isReallyCopy: Boolean = true) = _copyContentOf(from, isReallyCopy)
-            fun ParamsBuilder<O, T>.copy(from: O, isReallyCopy: Boolean = true) = _copyContentOf(from, isReallyCopy)
-            fun ParamsBuilder<O, T>.copyContent(from: O, isReallyCopy: Boolean = true) = _copyContentOf(from, isReallyCopy)
-            fun ParamsBuilder<O, T>.copyContentOf(from: O, isReallyCopy: Boolean = true) = _copyContentOf(from, isReallyCopy)
-//            fun ParamsBuilder<O, T>.copyContentOfIfNotExists(from: O, isReallyCopy: Boolean = true) = _copyContentOf(from, isReallyCopy)
+            fun ParamsBuilder<O, T>.cp(from: O, isReallyCopy: Boolean = true) = _copyContentOf(this, from, isReallyCopy)
+            fun ParamsBuilder<O, T>.copy(from: O, isReallyCopy: Boolean = true) = _copyContentOf(this, from, isReallyCopy)
+            fun ParamsBuilder<O, T>.copyContent(from: O, isReallyCopy: Boolean = true) = _copyContentOf(this, from, isReallyCopy)
+            fun ParamsBuilder<O, T>.copyContentOf(from: O, isReallyCopy: Boolean = true) = _copyContentOf(this, from, isReallyCopy)
+            // fun ParamsBuilder<O, T>.copyContentOfIfNotExists(from: O, isReallyCopy: Boolean = true) = _copyContentOf(this, from, isReallyCopy)
 
-            private fun _copyContentOf(from: O, isReallyCopy: Boolean) {
+            private fun _copyContentOf(paramsBuilder: ParamsBuilder<O, T>, from: O, isReallyCopy: Boolean): ParamsBuilder<O, T> {
                 if (null == from) TODO("'copyContentFrom' can not be null")
                 if (current == from) TODO("'copyContentFrom' can not be the same: '$current' '$from'")
                 _copyContentOf = from
                 _isReallyCopy = isReallyCopy
+                return paramsBuilder
+            }
+
+            fun ParamsBuilder<O, T>.renameTo(newName: String): ParamsBuilder<O, T> {
+                _renameTo = newName
+                return this
             }
         }
 
@@ -206,6 +317,7 @@ abstract class NodeItems {
             override val nodeFrom: Any,
             override val contentOf: NodeItemsDesc.ItemContent?,
             override val isReallyCopy: Boolean,
+            override val renameTo: String?,
         ) : NodeItemsDesc.ItemContent
 
         object general {
@@ -217,7 +329,8 @@ abstract class NodeItems {
                     b._dependency.map { it.contentGeneral },
                     this,
                     b._copyContentOf?.contentGeneral,
-                    b._isReallyCopy
+                    b._isReallyCopy,
+                    b._renameTo,
                 )
                 }
             }
@@ -232,7 +345,8 @@ abstract class NodeItems {
                     b._dependency.map { it.contentJv },
                     this,
                     b._copyContentOf?.contentJv,
-                    b._isReallyCopy
+                    b._isReallyCopy,
+                    b._renameTo,
                 )
                 }
             }
@@ -247,7 +361,8 @@ abstract class NodeItems {
                     b._dependency.map { it.contentPy },
                     this,
                     b._copyContentOf?.contentPy,
-                    b._isReallyCopy
+                    b._isReallyCopy,
+                    b._renameTo,
                 )
                 }
             }
@@ -262,7 +377,8 @@ abstract class NodeItems {
                     b._dependency.map { it.contentKt },
                     this,
                     b._copyContentOf?.contentKt,
-                    b._isReallyCopy
+                    b._isReallyCopy,
+                    b._renameTo,
                 )
                 }
             }
@@ -277,7 +393,8 @@ abstract class NodeItems {
                     b._dependency.map { it.contentKt },
                     this,
                     b._copyContentOf?.contentKt,
-                    b._isReallyCopy
+                    b._isReallyCopy,
+                    b._renameTo,
                 )
                 }
             }

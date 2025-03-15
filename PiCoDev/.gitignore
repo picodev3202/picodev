@@ -1,3 +1,9 @@
 
 /out/
+
 /tmp/
+/tmp?/
+/tmp??/
+/tmp???/
+
+/*.patch

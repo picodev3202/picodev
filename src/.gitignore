@@ -1,2 +1,7 @@
 
 *.bak
+
+/tmp/
+/tmp?/
+/tmp??/
+/tmp???/
