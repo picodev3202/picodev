@@ -1,9 +1,9 @@
-class DebugQuickExample : QuickRun.Main {
-    override fun main(thisFile: LocalPlace, args: List<String>) {
-        println("$logTagName.main $thisFile")
+class DebugQuickExample : MainObject.WithThisFile() {
+    override fun main(args: Args) {
+        println("$logTagName.main ${args.file}")
 
         val pref01 = "code."
-        val srcFile = thisFile.parent.parent.parent.parent.takeIf { it.exists() }?.file("app_by_script/lua/app.lua") ?: TODO()
+        val srcFile = args.file.parent.parent.parent.parent.takeIf { it.exists() }?.file("app_by_script/lua/app.lua") ?: TODO()
         println("srcFile : $srcFile")
         val str = srcFile.readText()
         val list = mutableListOf<String>()
@@ -31,6 +31,6 @@ class DebugQuickExample : QuickRun.Main {
     }
 }
 
-fun main(args: Array<String>) = QuickRun.lookupSrcFileByClassNameAndRun(DebugQuickExample(), args) {
+fun main(args: Array<String>) = MainObject(DebugQuickExample(), args) {
     localPathToCurrentSourceFile..""
 }
