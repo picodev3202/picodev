@@ -7,7 +7,7 @@
 )
 object appInit : NodeItems() {
     class Template {
-        open class SimpleApp(private val lib: Lib = Lib()) : _Kt({ of(type.KtCode) depends on(lib.one, lib.two) }) {
+        open class SimpleApp(private val lib: Lib = Lib()) : Kt({ of(type.KtCode) depends on(lib.one, lib.two) }) {
             class Lib : _General() {
                 val one = ___Kt({ of(type.KtCode) })
                 val two = ___Kt({ of(type.KtCode) })
@@ -28,21 +28,21 @@ object appInit : NodeItems() {
                 //private val app1 = _Kt({ of(type.Kt) }) // unusable by 'app_simple_by_gradle', just for example, only with 'src dir' 'code' by 'of(type.KtCode)' implemented now
                 //private val app2 = _Kt({ of(type.KtCode) })
                 //private val app3 = SimpleApp()
-                private val local_properties_generate_code = ___Kt({ of depends on(tool.dev_project_tool_info, tool.local_system) })
-                private val quick_code = _____________________KtJv({
+                private val local_properties_generate_code = _l - __Kt({ of depends on(tool.dev_project_tool_info, tool.local_system) })
+                private val quick_code = _____________________l - KtJv({
                     of(type.JvKt) depends on(tool.main_object, tool.quick_named_string, tool.local_system, tool.dev_project_tool_info, tool.dev_project_tool_run_place)
                 })
-                private val quick_code_debug = _________________Kt({ of depends on(quick_code) })
-                private val scriptTemplate = ___________________Kt({ })
+                private val quick_code_debug = _________________l - Kt({ of depends on(quick_code) })
+                private val scriptTemplate = ___________________l - Kt({ })
 
                 class Tool(lib: Lib) : _General() {
-                    val quick_named_string = ___________Kt({ })
-                    val dev_project_tool_info = ________Kt({ of depends on(lib.dev_project_lookup) })
-                    val dev_project_tool_run_place = ___Kt({ of depends on(lib.dev_project) })
-                    val main_object = __________________Kt({ of depends on(lib.dev_project_lookup, quick_named_string) })
-                    val exec_process = _________________Kt({ of depends on(lib.local_place) })
-                    val local_user_home = ______________Kt({ of depends on(lib.local_place) })
-                    val local_system = _________________Kt({ of depends on(exec_process, local_user_home) })
+                    val quick_named_string = ________l - Kt({ })
+                    val dev_project_tool_info = _____l - Kt({ of depends on(lib.dev_project_lookup) })
+                    val dev_project_tool_run_place = l - Kt({ of depends on(lib.dev_project) })
+                    val main_object = _______________l - Kt({ of depends on(lib.dev_project_lookup, quick_named_string) })
+                    val exec_process = ______________l - Kt({ of depends on(lib.local_place) })
+                    val local_user_home = ___________l - Kt({ of depends on(lib.local_place) })
+                    val local_system = ______________l - Kt({ of depends on(exec_process, local_user_home) })
                 }
             }
         }
@@ -53,15 +53,15 @@ object appInit : NodeItems() {
     }
 
     object srcOf {
-        val local_place = ____l(src).appInit.lib.local_place
-        val dev_project = ____l(src).appInit.lib.dev_project
-        val dev_project_lookup = src.appInit.lib.dev_project_lookup
-        val dev_tool_info = __l(src).appInit.plus.tool.dev_project_tool_info
-        val dev_tool_run_place = src.appInit.plus.tool.dev_project_tool_run_place
-        val quick_named_string = src.appInit.plus.tool.quick_named_string
-        val main_object = ____l(src).appInit.plus.tool.main_object
-        val exec_process = ___l(src).appInit.plus.tool.exec_process
-        val local_user_home = l(src).appInit.plus.tool.local_user_home
+        val local_place = ________l - src.appInit.lib.local_place
+        val dev_project = ________l - src.appInit.lib.dev_project
+        val dev_project_lookup = _l - src.appInit.lib.dev_project_lookup
+        val dev_tool_info = ______l - src.appInit.plus.tool.dev_project_tool_info
+        val dev_tool_run_place = _l - src.appInit.plus.tool.dev_project_tool_run_place
+        val quick_named_string = _l - src.appInit.plus.tool.quick_named_string
+        val main_object = ________l - src.appInit.plus.tool.main_object
+        val exec_process = _______l - src.appInit.plus.tool.exec_process
+        val local_user_home = ____l - src.appInit.plus.tool.local_user_home
     }
 
     object src : SrcPlace() {
