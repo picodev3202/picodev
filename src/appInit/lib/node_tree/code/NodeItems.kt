@@ -79,31 +79,6 @@ abstract class NodeItems {
         }
     }
 
-    fun <T> _______________________l(item: T) = item
-    fun <T> ______________________l(item: T) = item
-    fun <T> _____________________l(item: T) = item
-    fun <T> ____________________l(item: T) = item
-    fun <T> ___________________l(item: T) = item
-    fun <T> __________________l(item: T) = item
-    fun <T> _________________l(item: T) = item
-    fun <T> ________________l(item: T) = item
-    fun <T> _______________l(item: T) = item
-    fun <T> ______________l(item: T) = item
-    fun <T> _____________l(item: T) = item
-    fun <T> ____________l(item: T) = item
-    fun <T> ___________l(item: T) = item
-    fun <T> __________l(item: T) = item
-    fun <T> _________l(item: T) = item
-    fun <T> ________l(item: T) = item
-    fun <T> _______l(item: T) = item
-    fun <T> ______l(item: T) = item
-    fun <T> _____l(item: T) = item
-    fun <T> ____l(item: T) = item
-    fun <T> ___l(item: T) = item
-    fun <T> __l(item: T) = item
-    fun <T> _l(item: T) = item
-    fun <T> l(item: T) = item
-
     val ___________________________________l = LL
     val __________________________________l = LL
     val _________________________________l = LL
@@ -140,41 +115,9 @@ abstract class NodeItems {
     val __l = LL
     val _l = LL
     val l = LL
-    //val NodeItems._l = LL
-    //val l_ = LL
-    //val l__ = LL
-    //val l___ = LL
-    //val l____ = LL
-    //val l_____ = LL
-    //val l______ = LL
-    //val l_______ = LL
-    //val l________ = LL
-    //val l_________ = LL
-    //val l__________ = LL
-    //val l___________ = LL
-    //val l____________ = LL
-    //val l_____________ = LL
-    //val l______________ = LL
-    //val l_______________ = LL
-    //val l________________ = LL
-    //val l_________________ = LL
-    //val l__________________ = LL
-    //val _l_ = LL
-    //val _l__ = LL
-    //val _l___ = LL
-    //val _l____ = LL
-    //val _l_____ = LL
-    //val _l______ = LL
-    //val _l_______ = LL
-    //val _l________ = LL
-    //val _l_________ = LL
-    //val _l__________ = LL
-    //val _l___________ = LL
 
     object LL {
-        infix fun <T> of(item: T) = item
-        infix fun <T> o(item: T) = item
-        operator fun <T> minus(item: T) = item  // https://kotlinlang.org/spec/operator-overloading.html#operator-overloading
+        operator fun <T> minus(item: T) = item
     }
 
     class LibraryContent(val name: String, override val nodeFrom: Any) : NodeItemsDesc.ItemContent {
@@ -224,7 +167,7 @@ abstract class NodeItems {
     open class ____General : _General()
     open class ___General : _General()
     open class __General : _General()
-    open class _General : Internal.general.O({ }) // maybe '_Empty' or maybe '_Generic' ...
+    open class _General : Internal.general.O({ })
     open class _General_(action: Internal.general.B.() -> Unit) : Internal.general.O(action)
 
     open class _____________Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
@@ -300,17 +243,9 @@ abstract class NodeItems {
     open class __Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
     open class Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
     open class _Kt(action: Internal.kt.B.() -> Unit) : Internal.kt.O(action)
-
-    open class ________Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
-    open class _______Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
-    open class ______Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
-    open class _____Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
-    open class ____Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
-    open class ___Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
+    open class _Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt({ of depends dependsOn })
     open class __Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
     open class Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
-    open class _Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt({ of depends dependsOn })
-    //fun of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) :Internal.kt.B.() -> Unit { }
 
     open class __________________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
     open class _________________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
@@ -483,7 +418,7 @@ abstract class NodeItems {
 
         object ktJv {
             open class B(current: O) : ParamsBuilder<NodeItemsDesc.Node.Item.Kt, NodeItemsDesc.Type.KtJv>(current)
-            open class O(action: B.() -> Unit) : NodeItemsDesc.Node.Item.Kt /*, NodeItemsDesc.Node.Item.Jv */{
+            open class O(action: B.() -> Unit) : NodeItemsDesc.Node.Item.Kt {
                 override val contentKt: ContentOfItem by lazy {
                     val b = B(this); b.action(); ContentOfItem(
                     b._type ?: DefaultTypes.data.Kt,
@@ -494,16 +429,6 @@ abstract class NodeItems {
                     b._renameTo,
                 )
                 }
-                //override val contentJv: ContentOfItem by lazy {
-                //    val b = B(this); b.action(); ContentOfItem(
-                //    b._type ?: DefaultTypes.data.Jv,
-                //    b._dependency.map { it.contentKt },
-                //    this,
-                //    b._copyContentOf?.contentKt,
-                //    b._isReallyCopy,
-                //    b._renameTo,
-                //)
-                //}
             }
         }
     }
