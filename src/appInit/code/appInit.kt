@@ -49,7 +49,7 @@ object appInit : NodeItems() {
     }
 
     object library {
-        val ide_lib = ___Library("ide_lib")
+        val ide_lib = _____l - Library("ide_lib")
     }
 
     object srcOf {

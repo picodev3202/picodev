@@ -142,6 +142,7 @@ abstract class NodeItems {
     open class ____Library(name: String) : _Library(name)
     open class ___Library(name: String) : _Library(name)
     open class __Library(name: String) : _Library(name)
+    open class Library(name: String) : _Library(name)
     open class _Library(name: String) : NodeItemsDesc.Node.Item.Jv, NodeItemsDesc.Node.Item.Kt {
         override val contentJv = LibraryContent(name, this)
         override val contentKt = contentJv
@@ -167,6 +168,7 @@ abstract class NodeItems {
     open class ____General : _General()
     open class ___General : _General()
     open class __General : _General()
+    open class General : Internal.general.O({ })
     open class _General : Internal.general.O({ })
     open class _General_(action: Internal.general.B.() -> Unit) : Internal.general.O(action)
 
