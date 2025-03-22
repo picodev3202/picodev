@@ -14,24 +14,6 @@ object appInit : NodeItems() {
             }
         }
 
-        open class SampleAppMulti(private val lib: Lib = Lib()) : JvKt({ of depends on(lib.oneKt, lib.oneJvKt) }) {
-            class Lib : _General() {
-                val oneJv = ____l - __Jv({ })
-                val twoJv = ____l - __Jv({ of depends on(oneJv) })
-                val fourJv = ___l - __Jv___of_depends_on(oneJv)
-                val oneJvKt = __l - JvKt({ })
-                val twoKtJv = __l - KtJv({ of depends on(oneJvKt, oneKt) })
-                val oneKt = ____l - __Kt({ of depends on(oneJvKt) })
-                val twoKt = ____l - __Kt({ of depends on(oneJvKt, oneKt) })
-                val fourKt = ___l - __Kt___of_depends_on(oneJvKt, oneKt)
-                val fiveJvKt = _l - JvKt___of_depends_on(oneJvKt, oneKt)
-                val fiveKtJv = _l - KtJv___of_depends_on(oneJvKt, oneKt)
-                val onePy = ____l - __Py({ })
-                val twoPy = ____l - __Py({ of depends on(onePy) })
-                val fourPy = ___l - __Py___of_depends_on(onePy)
-            }
-        }
-
         open class appInit(val lib: Lib = Lib(), val plus: Plus = Plus(lib)) : Kt({ of(type.KtCode) depends on(lib.node_tree, lib.dev_project_lookup) }) {
             class Lib : ____________General() {
                 val local_place = _____________Kt({ of(type.KtCode) })
@@ -84,7 +66,6 @@ object appInit : NodeItems() {
 
     object src : SrcPlace() {
         val appInit = _____l - Template.appInit()
-        val appMulti = ____l - Template.SampleAppMulti()
     }
 
     @JvmStatic
