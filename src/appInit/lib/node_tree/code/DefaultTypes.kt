@@ -29,7 +29,7 @@ object DefaultTypes {
 
         object General : ItemType(listOf(), false, moduleXmlGeneral), NodeItems.NodeItemsDesc.Type.General
         object KtCode : ItemType(listOf("code" to ktExample), false, moduleXmlKt), NodeItems.NodeItemsDesc.Type.Kt
-        object JvKt : ItemType(listOf("kt" to ktExample, "jv" to jvExample), false, moduleXmlKt), NodeItems.NodeItemsDesc.Type.KtJv
+        object JvKt : ItemType(listOf("kt" to ktExample, "jv" to jvExample), false, moduleXmlKt), NodeItems.NodeItemsDesc.Type.KtJv/*, NodeItems.NodeItemsDesc.Type.Jv*/
         object Kt : ItemType(listOf("kt" to jvExample), false, moduleXmlKt), NodeItems.NodeItemsDesc.Type.Kt
         object Jv : ItemType(listOf("jv" to jvExample), false, moduleXmlJv), NodeItems.NodeItemsDesc.Type.Jv
         object Py : ItemType(listOf("py" to emptyExample), false, moduleXmlBoardCode), NodeItems.NodeItemsDesc.Type.Py
