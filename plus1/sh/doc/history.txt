@@ -7,3 +7,52 @@ SRC_PLACE=~/tmp/  SRC_URL=https://github.com/neovim/neovim  SRC_NAME=$(basename 
     cd $SRC_PLACE && git clone $SRC_URL --depth=1 --single-branch --branch=$SRC_VERSION ${SRC_NAME}_$SRC_VERSION && \
     cd $SRC_PLACE${SRC_NAME}_$SRC_VERSION/  &&  git switch -c $SRC_VERSION && \
     time make CMAKE_BUILD_TYPE=Release      &&  cd build  &&  ./bin/nvim --version  &&  time cpack -G DEB  #  && sudo dpkg -i nvim-linux-x86_64.deb
+
+
+$ dconf dump / > conf.dump
+$ dconf load / < conf.dump
+
+$ dconf dump  / > conf.dump
+$ dconf reset /
+$ dconf load  / < conf.dump
+
+$ gsettings list-schemas | grep 'freedesktop'
+$ gsettings list-recursively org.freedesktop...
+
+$ dconf dump  /org/freedesktop/ > conf.item.dump
+$ dconf reset /org/freedesktop/
+$ dconf load  /org/freedesktop/ < conf.item.dump
+
+$ dconf write /org/freedesktop/.../sample-delay "uint32 400"
+$ dconf write /org/freedesktop/.../sample-delay 400
+
+$ dconf list /org/gnome/libgnomekbd/keyboard/
+layouts
+options
+$ dconf reset /org/gnome/libgnomekbd/keyboard/
+$ dconf dump  /org/gnome/libgnomekbd/keyboard/
+
+$ dconf dump  /org/gnome/libgnomekbd/keyboard/
+[/]
+layouts=['us', 'de']
+options=['grp\tgrp:win_space_toggle', 'terminate\tterminate:ctrl_alt_bksp', 'grp\tgrp:shifts_toggle']
+
+$ gsettings list-recursively org.gnome.libgnomekbd.keyboard
+org.gnome.libgnomekbd.keyboard layouts @as []
+org.gnome.libgnomekbd.keyboard model ''
+org.gnome.libgnomekbd.keyboard options ['grp\tgrp:win_space_toggle', 'terminate\tterminate:ctrl_alt_bksp']
+$ gsettings list-recursively org.gnome.libgnomekbd.keyboard
+org.gnome.libgnomekbd.keyboard layouts ['us', 'de']
+org.gnome.libgnomekbd.keyboard model ''
+org.gnome.libgnomekbd.keyboard options ['grp\tgrp:win_space_toggle', 'terminate\tterminate:ctrl_alt_bksp', 'grp\tgrp:shifts_toggle']
+
+$ dconf write /org/gnome/libgnomekbd/keyboard/layouts "@as []"
+$ dconf read  /org/gnome/libgnomekbd/keyboard/layouts
+@as []
+$ dconf reset /org/gnome/libgnomekbd/keyboard/layouts
+$ dconf read  /org/gnome/libgnomekbd/keyboard/layouts
+
+$ dconf write  /org/gnome/libgnomekbd/keyboard/layouts "['us', 'de']"
+$ dconf read  /org/gnome/libgnomekbd/keyboard/layouts
+['us', 'de']
+
