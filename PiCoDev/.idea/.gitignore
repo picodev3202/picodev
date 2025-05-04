@@ -6,3 +6,6 @@
 
 /uiDesigner.xml
 /workspace.xml
+
+/whitesource/*
+/libraries/Permanent_Script_Dependencies.xml
