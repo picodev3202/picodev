@@ -29,11 +29,14 @@ object appInit : NodeItems() {
                 //private val app2 = _Kt({ of(type.KtCode) })
                 //private val app3 = SimpleApp()
                 private val local_properties_generate_code = _l - __Kt({ of depends on(tool.dev_project_tool_info, tool.local_system) })
-                private val quick_code = _____________________l - KtJv({
+                private val quick_code = _____________________l - __Kt({
+                    of depends on(tool.main_object, tool.quick_named_string, tool.local_system, tool.dev_project_tool_info, tool.dev_project_tool_run_place)
+                })
+                private val quick_code_example = _____________l - JvKt({
                     of(type.JvKt) depends on(tool.main_object, tool.quick_named_string, tool.local_system, tool.dev_project_tool_info, tool.dev_project_tool_run_place)
                 })
-                private val quick_code_debug = _________________l - Kt({ of depends on(quick_code) })
-                private val scriptTemplate = ___________________l - Kt({ })
+                private val quick_code_debug = _______________l - __Kt({ of depends on(quick_code) })
+                private val scriptTemplate = _________________l - __Kt({ })
 
                 class Tool(lib: Lib) : _General() {
                     val quick_named_string = ________l - Kt({ })
