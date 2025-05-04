@@ -39,6 +39,8 @@ object appInit : NodeItems() {
                 private val scriptTemplate = _________________l - __Kt({ })
 
                 class Tool(lib: Lib) : _General() {
+                    val char_transform = ____________l - Kt({ })
+                    val char_transform_debug = ______l - Kt({ of depends on(main_object, char_transform) })
                     val quick_named_string = ________l - Kt({ })
                     val dev_project_tool_info = _____l - Kt({ of depends on(lib.dev_project_lookup) })
                     val dev_project_tool_run_place = l - Kt({ of depends on(lib.dev_project) })
