@@ -4,7 +4,7 @@
     "ClassName",
     "unused",
 )
-abstract class NodeItems : NodeItemsLib() {
+abstract class NodeItems {
     object type {
         val KtCode = DefaultTypes.data.KtCode
         val JvKt = DefaultTypes.data.JvKt
@@ -215,7 +215,7 @@ abstract class NodeItems : NodeItemsLib() {
     open class KtJv___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _KtJv___of_depends_on(*dependsOn)
     open class JvKt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _KtJv___of_depends_on(*dependsOn)
 
-    abstract class Internal : NodeItemsDesc() {
+    abstract class Internal {
 
         open class ParamsBuilder<O, T>(private val current: O) {
             val of: ParamsBuilder<O, T> get() = this
