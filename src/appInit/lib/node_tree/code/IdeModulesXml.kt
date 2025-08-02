@@ -1,5 +1,5 @@
 @Suppress("SpellCheckingInspection")
-object IdeModulesXml : NodeItems() {
+object IdeModulesXml {
 
     fun modulesXml(modules: List<String>): String {
         val modulesPlace = mutableListOf<String>()
@@ -87,7 +87,7 @@ ${deps.joinToString("") { "$it\n" }}  </component>
         path: NodePath,
         moduleItemType: DefaultTypes.ItemType,
         deps: List<NodePath>,
-        libraries: List<LibraryContent>
+        libraries: List<NodeItemWithName>
     ): String {
         val pathStr = path.fs
         val urlBegin = """url="file://${'$'}MODULE_DIR${'$'}/../../../../$srcStr/"""
