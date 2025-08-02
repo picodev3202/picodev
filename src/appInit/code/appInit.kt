@@ -7,15 +7,15 @@
 )
 object appInit : NodeItems() {
     class Template {
-        open class SimpleApp(private val lib: Lib = Lib()) : Kt({ of(type.KtCode) depends on(lib.one, lib.two) }) {
-            class Lib : _General() {
+        open class SimpleApp(private val lib: Lib = Lib()) : NodeItems.Kt({ of(type.KtCode) depends on(lib.one, lib.two) }) {
+            class Lib : NodeItems._General() {
                 val one = ___Kt({ of(type.KtCode) })
                 val two = ___Kt({ of(type.KtCode) })
             }
         }
 
-        open class appInit(val lib: Lib = Lib(), val plus: Plus = Plus(lib)) : Kt({ of(type.KtCode) depends on(lib.node_tree, lib.dev_project_lookup) }) {
-            class Lib : ____________General() {
+        open class appInit(val lib: Lib = Lib(), val plus: Plus = Plus(lib)) : NodeItems.Kt({ of(type.KtCode) depends on(lib.node_tree, lib.dev_project_lookup) }) {
+            class Lib : NodeItems.____________General() {
                 val local_place = _____________Kt({ of(type.KtCode) })
                 val local_properties = ________Kt({ of(type.KtCode) depends on(local_place) })
                 val dev_project = _____________Kt({ of(type.KtCode) depends on(local_properties) })
@@ -23,7 +23,7 @@ object appInit : NodeItems() {
                 val node_tree = _______________Kt({ of(type.KtCode) depends on(local_place) })
             }
 
-            class Plus(lib: Lib, val tool: Tool = Tool(lib)) : _General() {
+            class Plus(lib: Lib, val tool: Tool = Tool(lib)) : NodeItems._General() {
                 //private val app0 = SimpleApp()
                 //private val app1 = _Kt({ of(type.Kt) }) // unusable by 'app_simple_by_gradle', just for example, only with 'src dir' 'code' by 'of(type.KtCode)' implemented now
                 //private val app2 = _Kt({ of(type.KtCode) })
@@ -38,7 +38,7 @@ object appInit : NodeItems() {
                 private val quick_code_debug = _______________l - __Kt({ of depends on(quick_code) })
                 private val scriptTemplate = _________________l - __Kt({ })
 
-                class Tool(lib: Lib) : _General() {
+                class Tool(lib: Lib) : NodeItems._General() {
                     val char_transform = ____________l - Kt({ })
                     val char_transform_debug = ______l - Kt({ of depends on(main_object, char_transform) })
                     val quick_named_string = ________l - Kt({ })
@@ -69,7 +69,7 @@ object appInit : NodeItems() {
         val local_user_home = ____l - src.appInit.plus.tool.local_user_home
     }
 
-    object src : SrcPlace() {
+    object src : NodeItems.SrcPlace() {
         val appInit = _____l - Template.appInit()
     }
 
