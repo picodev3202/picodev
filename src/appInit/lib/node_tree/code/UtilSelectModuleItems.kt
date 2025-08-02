@@ -71,10 +71,10 @@ object UtilSelectModuleItems : NodeItems() {
         }
     }
 
-    class SelectorOfItems : NodeItemsDesc() {
+    class SelectorOfItems {
         private val holder = HolderOfModules()
-        private var lastSrcPlace: Node.SrcPlace? = null
-        private fun onItem(srcPlace: Node.SrcPlace, path: List<String>, module: ItemContent, fullPath: List<String>) {
+        private var lastSrcPlace: NodeItemsDesc.Node.SrcPlace? = null
+        private fun onItem(srcPlace: NodeItemsDesc.Node.SrcPlace, path: List<String>, module: NodeItemsDesc.ItemContent, fullPath: List<String>) {
             val lastSrcPlc = lastSrcPlace
             if (null == lastSrcPlc) {
                 lastSrcPlace = srcPlace
@@ -89,12 +89,12 @@ object UtilSelectModuleItems : NodeItems() {
             val mainObjectsTree = util.objectsTree(mainObj, NodeItemsDesc.Node.Unit)
             mainObjectsTree.run {
                 // println("fillHolderOfItems mainNode=$mainNode")
-                if (mainObj is Node.SrcPlace) mainNode.children.forEach<NodeItemsDesc.Node.Item> { path, _, obj, fullPath ->
-                    onItem(mainObj, path, itemContent(obj), fullPath)
+                if (mainObj is NodeItemsDesc.Node.SrcPlace) mainNode.children.forEach<NodeItemsDesc.Node.Item> { path, _, obj, fullPath ->
+                    onItem(mainObj, path, NodeItemsDesc.itemContent(obj), fullPath)
                 }
                 else mainNode.children.forEach<SrcPlace> { _, srcPlaceNode, srcPlace, _ ->
                     srcPlaceNode.children.forEach<NodeItemsDesc.Node.Item> { path, _, obj, fullPath ->
-                        onItem(srcPlace, path, itemContent(obj), fullPath)
+                        onItem(srcPlace, path, NodeItemsDesc.itemContent(obj), fullPath)
                     }
                 }
             }

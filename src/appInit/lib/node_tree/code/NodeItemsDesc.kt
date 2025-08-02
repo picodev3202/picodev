@@ -1,4 +1,4 @@
-abstract class NodeItemsDesc {
+object NodeItemsDesc {
     interface Type {
         interface General : Content.Type
         interface Py : Content.Type
