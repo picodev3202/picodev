@@ -128,5 +128,6 @@ object appInit : NodeItems() {
             println("Init.main $modulesFile")
             modulesFile.apply { parentFile.mkdirs() }.writeText(modulesXmlStr)
         }
+        println("Init.main KotlinVersion is : ${KotlinVersion.CURRENT}")
     }
 }
