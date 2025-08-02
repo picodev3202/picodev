@@ -4,7 +4,7 @@ object DefaultTypes {
         val srcs: List<Pair<String, Pair<String, (String, String) -> String>>>,
         val withExample: Boolean,
         val moduleXmlStr: (String, List<String>, List<String>) -> String
-    ) : NodeItems.NodeItemsDesc.Content.Type
+    ) : NodeItemsLib.NodeItemsDesc.Content.Type
 
     @Suppress("ClassName")
     object data {
@@ -27,12 +27,12 @@ object DefaultTypes {
         val moduleXmlBoardCode = IdeModulesXml.moduleXmlBoardCode
         val moduleXmlGeneral = IdeModulesXml.moduleXmlGeneral
 
-        object General : ItemType(listOf(), false, moduleXmlGeneral), NodeItems.NodeItemsDesc.Type.General
-        object KtCode : ItemType(listOf("code" to ktExample), false, moduleXmlKt), NodeItems.NodeItemsDesc.Type.Kt
-        object JvKt : ItemType(listOf("kt" to ktExample, "jv" to jvExample), false, moduleXmlKt), NodeItems.NodeItemsDesc.Type.KtJv
-        object Kt : ItemType(listOf("kt" to jvExample), false, moduleXmlKt), NodeItems.NodeItemsDesc.Type.Kt
-        object Jv : ItemType(listOf("jv" to jvExample), false, moduleXmlJv), NodeItems.NodeItemsDesc.Type.Jv
-        object Py : ItemType(listOf("py" to emptyExample), false, moduleXmlBoardCode), NodeItems.NodeItemsDesc.Type.Py
+        object General : ItemType(listOf(), false, moduleXmlGeneral), NodeItemsLib.NodeItemsDesc.Type.General
+        object KtCode : ItemType(listOf("code" to ktExample), false, moduleXmlKt), NodeItemsLib.NodeItemsDesc.Type.Kt
+        object JvKt : ItemType(listOf("kt" to ktExample, "jv" to jvExample), false, moduleXmlKt), NodeItemsLib.NodeItemsDesc.Type.KtJv
+        object Kt : ItemType(listOf("kt" to jvExample), false, moduleXmlKt), NodeItemsLib.NodeItemsDesc.Type.Kt
+        object Jv : ItemType(listOf("jv" to jvExample), false, moduleXmlJv), NodeItemsLib.NodeItemsDesc.Type.Jv
+        object Py : ItemType(listOf("py" to emptyExample), false, moduleXmlBoardCode), NodeItemsLib.NodeItemsDesc.Type.Py
         object BoardCode : ItemType(
             listOf(
                 "py         " to emptyExample,
@@ -41,6 +41,6 @@ object DefaultTypes {
                 "lib_local  " to emptyExample,
                 "lib_py     " to emptyExample,
             ), false, moduleXmlBoardCode
-        ), NodeItems.NodeItemsDesc.Type.Py
+        ), NodeItemsLib.NodeItemsDesc.Type.Py
     }
 }
