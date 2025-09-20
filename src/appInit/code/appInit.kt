@@ -4,26 +4,27 @@
     "PropertyName",
     "PrivatePropertyName",
     "MoveLambdaOutsideParentheses",
+    "RemoveRedundantQualifierName",
 )
-object appInit : NodeItems() {
+object appInit : To() {
     class Template {
-        open class SimpleApp(private val lib: Lib = Lib()) : NodeItems.Kt({ of(type.KtCode) depends on(lib.one, lib.two) }) {
-            class Lib : NodeItems.General() {
-                val one = ___Kt({ of(type.KtCode) })
-                val two = ___Kt({ of(type.KtCode) })
+        open class SimpleApp(private val lib: Lib = Lib()) : To.Kt({ of(type.KtCode) depends on(lib.one, lib.two) }) {
+            class Lib : To.General() {
+                val one = _l - Kt({ of(type.KtCode) })
+                val two = _l - Kt({ of(type.KtCode) })
             }
         }
 
-        open class appInit(val lib: Lib = Lib(), val plus: Plus = Plus(lib)) : NodeItems.Kt({ of(type.KtCode) depends on(lib.node_tree, lib.dev_project_lookup) }) {
-            class Lib : NodeItems.General() {
-                val local_place = _____________Kt({ of(type.KtCode) })
-                val local_properties = ________Kt({ of(type.KtCode) depends on(local_place) })
-                val dev_project = _____________Kt({ of(type.KtCode) depends on(local_properties) })
-                val dev_project_lookup = ______Kt({ of(type.KtCode) depends on(dev_project) })
-                val node_tree = _______________Kt({ of(type.KtCode) depends on(local_place) })
+        class appInit(val lib: Lib = Lib(), val plus: Plus = Plus(lib)) : To.Kt({ of(type.KtCode) depends on(lib.node_tree, lib.dev_project_lookup) }) {
+            class Lib : To.General() {
+                 val local_place = __________l - Kt({ of(type.KtCode) })
+                 val local_properties = _____l - Kt({ of(type.KtCode) depends on(local_place) })
+                 val dev_project = __________l - Kt({ of(type.KtCode) depends on(local_properties) })
+                 val dev_project_lookup = ___l - Kt({ of(type.KtCode) depends on(dev_project) })
+                 val node_tree = ____________l - Kt({ of(type.KtCode) depends on(local_place) })
             }
 
-            class Plus(lib: Lib, val tool: Tool = Tool(lib)) : NodeItems.General() {
+            class Plus(lib: Lib, val tool: Tool = Tool(lib)) : To.General() {
                 //private val app0 = SimpleApp()
                 //private val app1 = _Kt({ of(type.Kt) }) // unusable by 'app_simple_by_gradle', just for example, only with 'src dir' 'code' by 'of(type.KtCode)' implemented now
                 //private val app2 = _Kt({ of(type.KtCode) })
@@ -38,16 +39,16 @@ object appInit : NodeItems() {
                 private val quick_code_debug = _______________l - __Kt({ of depends on(quick_code) })
                 private val scriptTemplate = _________________l - __Kt({ })
 
-                class Tool(lib: Lib) : NodeItems.General() {
-                    val char_transform = ____________l - Kt({ })
-                    val char_transform_debug = ______l - Kt({ of depends on(main_object, char_transform) })
-                    val quick_named_string = ________l - Kt({ })
-                    val dev_project_tool_info = _____l - Kt({ of depends on(lib.dev_project_lookup) })
-                    val dev_project_tool_run_place = l - Kt({ of depends on(lib.dev_project) })
-                    val main_object = _______________l - Kt({ of depends on(lib.dev_project_lookup, quick_named_string) })
-                    val exec_process = ______________l - Kt({ of depends on(lib.local_place) })
-                    val local_user_home = ___________l - Kt({ of depends on(lib.local_place) })
-                    val local_system = ______________l - Kt({ of depends on(exec_process, local_user_home) })
+                class Tool(lib: Lib) : To.General() {
+                    val char_transform = _______________l - Kt({ })
+                    val char_transform_debug = _________l - Kt({ of depends on(main_object, char_transform) })
+                    val quick_named_string = ___________l - Kt({ })
+                    val dev_project_tool_info = ________l - Kt({ of depends on(lib.dev_project_lookup) })
+                    val dev_project_tool_run_place = ___l - Kt({ of depends on(lib.dev_project) })
+                    val main_object = __________________l - Kt({ of depends on(lib.dev_project_lookup, quick_named_string) })
+                    val exec_process = _________________l - Kt({ of depends on(lib.local_place) })
+                    val local_user_home = ______________l - Kt({ of depends on(lib.local_place) })
+                    val local_system = _________________l - Kt({ of depends on(exec_process, local_user_home) })
                 }
             }
         }
@@ -69,7 +70,7 @@ object appInit : NodeItems() {
         val local_user_home = ____l - src.appInit.plus.tool.local_user_home
     }
 
-    object src : NodeItems.SrcPlace() {
+    object src : To.SrcPlace() {
         val appInit = _____l - Template.appInit()
     }
 

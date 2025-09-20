@@ -4,7 +4,7 @@
     "ClassName",
     "unused",
 )
-abstract class NodeItems {
+abstract class /*NodeItems*/ To {
     object type {
         val KtCode = DefaultTypes.data.KtCode
         val JvKt = DefaultTypes.data.JvKt
@@ -13,6 +13,11 @@ abstract class NodeItems {
         val BoardCode = DefaultTypes.data.BoardCode
     }
 
+    val ________________________________________l = LL
+    val _______________________________________l = LL
+    val ______________________________________l = LL
+    val _____________________________________l = LL
+    val ____________________________________l = LL
     val ___________________________________l = LL
     val __________________________________l = LL
     val _________________________________l = LL
@@ -48,25 +53,12 @@ abstract class NodeItems {
     val ___l = LL
     val __l = LL
     val _l = LL
-    val l = LL
+    // val l = LL
 
     object LL {
         operator fun <T> minus(item: T) = item
     }
 
-    open class ________________Library(name: String) : _Library(name)
-    open class _______________Library(name: String) : _Library(name)
-    open class ______________Library(name: String) : _Library(name)
-    open class _____________Library(name: String) : _Library(name)
-    open class ___________Library(name: String) : _Library(name)
-    open class __________Library(name: String) : _Library(name)
-    open class _________Library(name: String) : _Library(name)
-    open class ________Library(name: String) : _Library(name)
-    open class _______Library(name: String) : _Library(name)
-    open class ______Library(name: String) : _Library(name)
-    open class _____Library(name: String) : _Library(name)
-    open class ____Library(name: String) : _Library(name)
-    open class ___Library(name: String) : _Library(name)
     open class __Library(name: String) : _Library(name)
     open class Library(name: String) : _Library(name)
     open class _Library(name: String) : NodeItemsDesc.Node.Item.Jv, NodeItemsDesc.Node.Item.Kt {
@@ -78,37 +70,11 @@ abstract class NodeItems {
 
     open class _Node : NodeItemsDesc.Node
 
-    open class _________________General : _General()
-    open class ________________General : _General()
-    open class _______________General : _General()
-    open class ______________General : _General()
-    open class _____________General : _General()
-    open class ____________General : _General()
-    open class ___________General : _General()
-    open class __________General : _General()
-    open class _________General : _General()
-    open class ________General : _General()
-    open class _______General : _General()
-    open class ______General : _General()
-    open class _____General : _General()
-    open class ____General : _General()
-    open class ___General : _General()
     open class __General : _General()
     open class General : Internal.general.O({ })
     open class _General : Internal.general.O({ })
     open class _General_(action: Internal.general.B.() -> Unit) : Internal.general.O(action)
 
-    open class _____________Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
-    open class ____________Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
-    open class ___________Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
-    open class __________Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
-    open class _________Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
-    open class ________Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
-    open class _______Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
-    open class ______Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
-    open class _____Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
-    open class ____Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
-    open class ___Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
     open class __Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
     open class Jv(action: Internal.jv.B.() -> Unit) : _Jv(action)
     open class _Jv(action: Internal.jv.B.() -> Unit) : Internal.jv.O(action)
@@ -116,17 +82,6 @@ abstract class NodeItems {
     open class __Jv___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Jv) : _Jv___of_depends_on(*dependsOn)
     open class Jv___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Jv) : _Jv___of_depends_on(*dependsOn)
 
-    open class _____________Py(action: Internal.py.B.() -> Unit) : _Py(action)
-    open class ____________Py(action: Internal.py.B.() -> Unit) : _Py(action)
-    open class ___________Py(action: Internal.py.B.() -> Unit) : _Py(action)
-    open class __________Py(action: Internal.py.B.() -> Unit) : _Py(action)
-    open class _________Py(action: Internal.py.B.() -> Unit) : _Py(action)
-    open class ________Py(action: Internal.py.B.() -> Unit) : _Py(action)
-    open class _______Py(action: Internal.py.B.() -> Unit) : _Py(action)
-    open class ______Py(action: Internal.py.B.() -> Unit) : _Py(action)
-    open class _____Py(action: Internal.py.B.() -> Unit) : _Py(action)
-    open class ____Py(action: Internal.py.B.() -> Unit) : _Py(action)
-    open class ___Py(action: Internal.py.B.() -> Unit) : _Py(action)
     open class __Py(action: Internal.py.B.() -> Unit) : _Py(action)
     open class Py(action: Internal.py.B.() -> Unit) : _Py(action)
     open class _Py(action: Internal.py.B.() -> Unit) : Internal.py.O(action)
@@ -134,40 +89,6 @@ abstract class NodeItems {
     open class __Py___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Py) : _Py___of_depends_on(*dependsOn)
     open class Py___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Py) : _Py___of_depends_on(*dependsOn)
 
-    open class ____________________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ___________________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class __________________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class _________________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ________________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class _______________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ______________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class _____________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ____________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ___________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class __________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class _________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ________________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class _______________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ______________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class _____________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ____________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ___________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class __________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class _________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ________________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class _______________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ______________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class _____________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ____________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ___________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class __________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class _________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ________Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class _______Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ______Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class _____Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ____Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
-    open class ___Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
     open class __Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
     open class Kt(action: Internal.kt.B.() -> Unit) : _Kt(action)
     open class _Kt(action: Internal.kt.B.() -> Unit) : Internal.kt.O(action)
@@ -175,39 +96,6 @@ abstract class NodeItems {
     open class __Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
     open class Kt___of_depends_on(vararg dependsOn: NodeItemsDesc.Node.Item.Kt) : _Kt___of_depends_on(*dependsOn)
 
-    open class __________________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class _________________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ________________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class _______________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ______________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class _____________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ____________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ___________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class __________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class _________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ________________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class _______________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ______________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class _____________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ____________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ___________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class __________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class _________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ________________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class _______________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ______________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class _____________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ____________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ___________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class __________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class _________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ________KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class _______KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ______KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class _____KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ____KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class ___KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
-    open class __KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
     open class KtJv(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
     open class JvKt(action: Internal.ktJv.B.() -> Unit) : _KtJv(action)
     open class _KtJv(action: Internal.ktJv.B.() -> Unit) : Internal.ktJv.O(action)
@@ -249,6 +137,7 @@ abstract class NodeItems {
                 _dependency.addAll(dependsOn)
             }
 
+            @Suppress("UnusedReceiverParameter")
             val ParamsBuilder<O, T>.highlights get() = Unit
 
             fun ParamsBuilder<O, T>.cp(from: O, isReallyCopy: Boolean = true) = _copyContentOf(this, from, isReallyCopy)
