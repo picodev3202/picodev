@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="CompoundRunConfigurationExample" type="CompoundRunConfigurationType">
+    <toRun name="init_app_generate.kts" type="KotlinStandaloneScriptRunConfigurationType" />
+    <toRun name="generatedInitScript.kts" type="KotlinStandaloneScriptRunConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>
