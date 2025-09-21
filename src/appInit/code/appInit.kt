@@ -36,6 +36,7 @@ object appInit : To() {
                 private val quick_code_example = _____________l - JvKt({
                     of(type.JvKt) depends on(tool.main_object, tool.quick_named_string, tool.local_system, tool.dev_project_tool_info, tool.dev_project_tool_run_place)
                 })
+                private val quick_code_plus = ________________l - __Kt({ of depends on(tool.main_object, library.jsoup, library.jackson_databind) })
                 private val quick_code_debug = _______________l - __Kt({ of depends on(quick_code) })
                 private val scriptTemplate = _________________l - __Kt({ })
 
@@ -55,7 +56,9 @@ object appInit : To() {
     }
 
     object library {
-        val ide_lib = _____l - Library("ide_lib")
+        val ide_lib = ____________l - Library("ide_lib")
+        val jackson_databind = ___l - Library("jackson-databind")
+        val jsoup = ______________l - Library("jsoup")
     }
 
     object srcOf {
