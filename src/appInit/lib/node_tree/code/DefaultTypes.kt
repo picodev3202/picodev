@@ -33,6 +33,17 @@ object DefaultTypes {
         object Kt : ItemType(listOf("kt" to jvExample), false, moduleXmlKt), NodeItemsDesc.Type.Kt
         object Jv : ItemType(listOf("jv" to jvExample), false, moduleXmlJv), NodeItemsDesc.Type.Jv
         object Py : ItemType(listOf("py" to emptyExample), false, moduleXmlBoardCode), NodeItemsDesc.Type.Py
+
+        object KtCodeConf : ItemType(
+            listOf(
+                "code" to ktExample,
+                "codeLib/codeConf" to ktExample,
+                "codeLib/codeModule" to ktExample,
+                "codeLib/codePlus" to ktExample,
+                "codeLib/srcLib" to ktExample,
+            ), false, moduleXmlKt
+        ), NodeItemsDesc.Type.Kt
+
         object BoardCode : ItemType(
             listOf(
                 "py         " to emptyExample,

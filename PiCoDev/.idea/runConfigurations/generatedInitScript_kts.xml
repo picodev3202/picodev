@@ -1,7 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="generatedInitScript.kts" type="KotlinStandaloneScriptRunConfigurationType" nameIsGenerated="true">
-    <shortenClasspath name="NONE" />
-    <option name="filePath" value="$PROJECT_DIR$/../wwgen/tmp/generatedInitScript.kts" />
-    <method v="2" />
-  </configuration>
-</component>

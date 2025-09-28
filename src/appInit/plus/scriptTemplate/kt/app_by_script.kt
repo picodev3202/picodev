@@ -10,14 +10,25 @@ val tmp01 = ScriptApi.
 //
 //
 buildscript {
+    operator fun <T> List<List<T>>.component5() = takeIf { it.size >= 5 }?.let { it[4] } ?: TODO()
+    operator fun <T> List<List<T>>.component6() = takeIf { it.size >= 6 }?.let { it[5] } ?: TODO()
+    operator fun <T> List<List<T>>.component7() = takeIf { it.size >= 7 }?.let { it[6] } ?: TODO()
+    operator fun <T> List<List<T>>.component8() = takeIf { it.size >= 8 }?.let { it[7] } ?: TODO()
+
     for (line in file("apps_list.txt").readText().lines()) if (line.trim().run { isNotEmpty() && !startsWith("//") }) {
         val srcRootOfSimpleApp = line.trim()
         file(srcRootOfSimpleApp).apply { if (!exists()) println("'simple app' '$srcRootOfSimpleApp' not exists in :'$absolutePath'") }.takeIf { it.exists() }
             ?.run { name to parentFile.absolutePath.length }?.let { (srcRootName, relativePathHelperLength) ->
-                val (codeFiles, libFiles) = listOf("code", "lib")
-                    .map { place -> file("$srcRootOfSimpleApp/$place").walk().filter { it.isFile && it.extension == "kt" }.toList() }
+
+                val (codeFiles, codeConfFiles, codeModuleFiles, codePlusFiles, srcLibFiles, libFiles) =
+                    listOf("code", "codeLib/codeConf", "codeLib/codeModule", "codeLib/codePlus", "codeLib/srcLib", "lib")
+
+                        .map { place -> file("$srcRootOfSimpleApp/$place").walk().filter { it.isFile && it.extension == "kt" }.toList() }
+
+                val allFoundFiles = libFiles + srcLibFiles + codePlusFiles + codeConfFiles + codeModuleFiles + codeFiles
+
                 """${
-                    (libFiles + codeFiles).joinToString("") {
+                    allFoundFiles.joinToString("") {
                         val relativePath = it.absolutePath.substring(relativePathHelperLength).trimStart(java.io.File.separatorChar)
                         "// begin $relativePath\n${it.readText()}\n//  end  $relativePath\n"
                     }

@@ -1,11 +1,11 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="init_app_generate_launch" type="Java Scratch" nameIsGenerated="true">
-    <option name="MAIN_CLASS_NAME" value="Scratch" />
+  <configuration default="false" name="init_app_generate_for_launch" type="Java Scratch">
+    <option name="MAIN_CLASS_NAME" value="init_app_generate_for_launch" />
     <option name="SCRATCH_FILE_URL" value="file://$PROJECT_DIR$/../src/appInit/app_by_script/init_app_generate_for_launch.java" />
     <shortenClasspath name="NONE" />
     <method v="2">
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="init_app_generate.kts" run_configuration_type="KotlinStandaloneScriptRunConfigurationType" />
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="generatedInitScript.kts" run_configuration_type="KotlinStandaloneScriptRunConfigurationType" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="init_app_generated_script.kts" run_configuration_type="KotlinStandaloneScriptRunConfigurationType" />
     </method>
   </configuration>
 </component>

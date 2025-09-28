@@ -7,6 +7,7 @@
 abstract class /*NodeItems*/ To {
     object type {
         val KtCode = DefaultTypes.data.KtCode
+        val KtCodeConf = DefaultTypes.data.KtCodeConf
         val JvKt = DefaultTypes.data.JvKt
         val Kt = DefaultTypes.data.Kt
         val Jv = DefaultTypes.data.Jv
