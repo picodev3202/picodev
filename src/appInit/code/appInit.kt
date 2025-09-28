@@ -15,7 +15,7 @@ object appInit : To() {
         //     }
         // }
 
-        class appInit(val lib: Lib = Lib(), val plus: Plus = Plus(lib)) : To.Kt({ of(type.KtCode) depends on(lib.node_tree, lib.dev_project_lookup) }) {
+        class appInit(val lib: Lib = Lib(), val plus: Plus = Plus(lib)) : To.Kt({ of(type.KtCodeConf) depends on(lib.node_tree, lib.dev_project_lookup) }) {
             class Lib : To.General() {
                 val local_place = __________l - Kt({ of(type.KtCode) })
                 val local_properties = _____l - Kt({ of(type.KtCode) depends on(local_place) })
