@@ -74,9 +74,12 @@ object appInit : To() {
         val local_system = _________l - src.appInit.plus.tool.local_system
     }
 
-    object src : To.SrcPlace() {
+    abstract class SrcAbstract : To.SrcPlace() {
         val appInit = _______________l - Template.appInit()
     }
+
+    object src : ModuleRegister.src()
+
 
     @JvmStatic
     fun main(args: Array<String>) {
