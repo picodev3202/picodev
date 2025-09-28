@@ -6,6 +6,8 @@ object ModuleRegister : To() {
 
         val code_example = ___l - CodeExample.Module()
 
+        val drive_info = _______l - DriveInfo.Module()
+
 
     }
 
