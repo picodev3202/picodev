@@ -8,20 +8,20 @@
 )
 object appInit : To() {
     class Template {
-        open class SimpleApp(private val lib: Lib = Lib()) : To.Kt({ of(type.KtCode) depends on(lib.one, lib.two) }) {
-            class Lib : To.General() {
-                val one = _l - Kt({ of(type.KtCode) })
-                val two = _l - Kt({ of(type.KtCode) })
-            }
-        }
+        // open class SimpleApp(private val lib: Lib = Lib()) : To.Kt({ of(type.KtCode) depends on(lib.one, lib.two) }) {
+        //     class Lib : To.General() {
+        //         val one = _l - Kt({ of(type.KtCode) })
+        //         val two = _l - Kt({ of(type.KtCode) })
+        //     }
+        // }
 
         class appInit(val lib: Lib = Lib(), val plus: Plus = Plus(lib)) : To.Kt({ of(type.KtCode) depends on(lib.node_tree, lib.dev_project_lookup) }) {
             class Lib : To.General() {
-                 val local_place = __________l - Kt({ of(type.KtCode) })
-                 val local_properties = _____l - Kt({ of(type.KtCode) depends on(local_place) })
-                 val dev_project = __________l - Kt({ of(type.KtCode) depends on(local_properties) })
-                 val dev_project_lookup = ___l - Kt({ of(type.KtCode) depends on(dev_project) })
-                 val node_tree = ____________l - Kt({ of(type.KtCode) depends on(local_place) })
+                val local_place = __________l - Kt({ of(type.KtCode) })
+                val local_properties = _____l - Kt({ of(type.KtCode) depends on(local_place) })
+                val dev_project = __________l - Kt({ of(type.KtCode) depends on(local_properties) })
+                val dev_project_lookup = ___l - Kt({ of(type.KtCode) depends on(dev_project) })
+                val node_tree = ____________l - Kt({ of(type.KtCode) depends on(local_place) })
             }
 
             class Plus(lib: Lib, val tool: Tool = Tool(lib)) : To.General() {
@@ -62,19 +62,20 @@ object appInit : To() {
     }
 
     object srcOf {
-        val local_place = ________l - src.appInit.lib.local_place
-        val dev_project = ________l - src.appInit.lib.dev_project
-        val dev_project_lookup = _l - src.appInit.lib.dev_project_lookup
-        val dev_tool_info = ______l - src.appInit.plus.tool.dev_project_tool_info
-        val dev_tool_run_place = _l - src.appInit.plus.tool.dev_project_tool_run_place
-        val quick_named_string = _l - src.appInit.plus.tool.quick_named_string
-        val main_object = ________l - src.appInit.plus.tool.main_object
-        val exec_process = _______l - src.appInit.plus.tool.exec_process
-        val local_user_home = ____l - src.appInit.plus.tool.local_user_home
+        val local_place = __________l - src.appInit.lib.local_place
+        val dev_project = __________l - src.appInit.lib.dev_project
+        val dev_project_lookup = ___l - src.appInit.lib.dev_project_lookup
+        val dev_tool_info = ________l - src.appInit.plus.tool.dev_project_tool_info
+        val dev_tool_run_place = ___l - src.appInit.plus.tool.dev_project_tool_run_place
+        val quick_named_string = ___l - src.appInit.plus.tool.quick_named_string
+        val main_object = __________l - src.appInit.plus.tool.main_object
+        val exec_process = _________l - src.appInit.plus.tool.exec_process
+        val local_user_home = ______l - src.appInit.plus.tool.local_user_home
+        val local_system = _________l - src.appInit.plus.tool.local_system
     }
 
     object src : To.SrcPlace() {
-        val appInit = _____l - Template.appInit()
+        val appInit = _______________l - Template.appInit()
     }
 
     @JvmStatic
