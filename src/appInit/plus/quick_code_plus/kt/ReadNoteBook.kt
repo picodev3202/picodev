@@ -15,7 +15,7 @@ object ReadNoteBook : MainObject() {
         return ""
     }
 
-    class CellSourceValueByPropertyName() {
+    class CellSourceVal() {
         operator fun getValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>): String {
             var result = ""
             if (thisRef is Node) {
@@ -42,14 +42,12 @@ object ReadNoteBook : MainObject() {
 
     class NoteBook : Node() {
         class Cell : Node() {
-            val source: String by CellSourceValueByPropertyName()
+            val source: String by CellSourceVal()
 
             @JsonProperty("cell_type")
             val cellType = ""
 
-            override fun toString(): String {
-                return cellType
-            }
+            override fun toString(): String = cellType
         }
 
         val cells = listOf<Cell>()
