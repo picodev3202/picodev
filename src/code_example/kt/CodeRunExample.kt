@@ -1,9 +1,8 @@
 object CodeRunExample {
-    val logTag = Val.logTag
+    val logTag by lazy { Val.detectLogTag() }
+    val thisFile by lazy { Val.lookupSrcFileByClassName() }
 
     object Val : MainObject() {
-        val logTag by lazy { detectLogTag() }
-        val thisFile by lazy { lookupSrcFileByClassName() }
         val devProject by lazy { DevProjectLookup.fromCurrentDir() }
     }
 
@@ -21,7 +20,6 @@ object CodeRunExample {
     private fun code02() {
         println("$logTag.code02")
         println("$logTag.code02 $logTag")
-        println("$logTag.code02 ${Val.logTag}")
-        println("$logTag.code02 ${Val.thisFile}")
+        println("$logTag.code02 $thisFile")
     }
 }

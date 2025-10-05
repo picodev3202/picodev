@@ -15,8 +15,7 @@ abstract class MainObject {
         val size = array.size
     }
 
-    @Suppress("unused")
-    protected fun lookupSrcFileByClassName(): LocalPlace {
+    fun lookupSrcFileByClassName(): LocalPlace {
         val devProject = DevProjectLookup.fromCurrentDir()
         val (expectedFileName, foundFiles) = lookupSrcFileByMainObjectClassName(this::class, devProject)
         if (foundFiles.size == 1) {
@@ -28,8 +27,7 @@ abstract class MainObject {
         TODO("found several(${foundFiles.size}) files(\n${foundFiles.joinToString("\n")}) by name='$expectedFileName' in '${devProject.rootPlace}'")
     }
 
-    @Suppress("unused")
-    protected fun detectLogTag(): String = detectClassNameForFileName(this::class)
+    fun detectLogTag(): String = detectClassNameForFileName(this::class)
 
     val objectName: String
         get() = this::class.java.name.let {
