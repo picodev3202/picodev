@@ -15,6 +15,22 @@ abstract class MainObject {
         val size = array.size
     }
 
+    @Suppress("unused")
+    protected fun lookupSrcFileByClassName(): LocalPlace {
+        val devProject = DevProjectLookup.fromCurrentDir()
+        val (expectedFileName, foundFiles) = lookupSrcFileByMainObjectClassName(this::class, devProject)
+        if (foundFiles.size == 1) {
+            return foundFiles[0]
+        }
+        if (foundFiles.isEmpty()) {
+            TODO("file by name='$expectedFileName' not fount in '${devProject.rootPlace}'")
+        }
+        TODO("found several(${foundFiles.size}) files(\n${foundFiles.joinToString("\n")}) by name='$expectedFileName' in '${devProject.rootPlace}'")
+    }
+
+    @Suppress("unused")
+    protected fun detectLogTag(): String = detectClassNameForFileName(this::class)
+
     val objectName: String
         get() = this::class.java.name.let {
             val i = it.indexOf(_char)
@@ -140,16 +156,8 @@ abstract class MainObject {
 
         private fun lookupSrcFileByMainObjectClassName(kClass: kotlin.reflect.KClass<out MainObject>, devProject: DevProject) = lookupSrcFileByClassName(kClass, devProject)
 
-        private fun lookupSrcFileByClassName(kClass: kotlin.reflect.KClass<*>, devProject: DevProject): Pair<String, List<LocalPlace.Impl>> {
-            val objectName = kClass.java.name.let {
-
-                if (it.contains(_char)) {
-                    return@let it.split(_char)[0]
-                }
-                return@let it
-            }
-
-            val expectedFileName = "${objectName}.$fileNameExtension_Kt"
+        fun lookupSrcFileByClassName(kClass: kotlin.reflect.KClass<*>, devProject: DevProject): Pair<String, List<LocalPlace.Impl>> {
+            val expectedFileName = "${detectClassNameForFileName(kClass)}.$fileNameExtension_Kt"
 
             val foundFiles = devProject.src.file.walk().onEnter {
                 when (it.name) {
@@ -162,6 +170,17 @@ abstract class MainObject {
             }.filter { it.isFile && expectedFileName == it.name }.toList()
 
             return expectedFileName to foundFiles.map { LocalPlace.of(it) }
+        }
+
+        fun detectClassNameForFileName(kClass: kotlin.reflect.KClass<*>): String {
+            val className = kClass.java.name.let {
+
+                if (it.contains(_char)) {
+                    return@let it.split(_char)[0]
+                }
+                return@let it
+            }
+            return className
         }
     }
 }
