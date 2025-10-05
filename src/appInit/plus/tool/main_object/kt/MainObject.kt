@@ -3,17 +3,14 @@
 abstract class MainObject {
     abstract class WithThisFile : MainObject() {
         @Suppress("unused")
-        class Args(val file: LocalPlace, val array: List<String>, val devProject: DevProject) {
-            operator fun get(index: Int): String = array[index]
-            val size = array.size
-        }
+        class Args(val file: LocalPlace, array: List<String>, devProject: DevProject) : MainObject.Args(array, devProject)
 
         open fun main(args: Args): Unit = System.err.println(" please 'override fun main(args: Args)' in $objectName")
         override fun main(args: MainObject.Args): Unit = System.err.println(" please 'override fun main(args: Args)' in $objectName")
     }
 
     @Suppress("unused")
-    class Args(val array: List<String>, val devProject: DevProject) {
+    open class Args(val array: List<String>, val devProject: DevProject) {
         operator fun get(index: Int): String = array[index]
         val size = array.size
     }
