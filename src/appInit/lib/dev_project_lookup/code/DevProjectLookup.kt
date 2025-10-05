@@ -11,6 +11,8 @@ object DevProjectLookup {
             ?: fromCurrentDir()
     }
 
+    fun by(place: LocalPlace) = lookupToParentOf(place)
+
     private fun lookupToParentOf(place: LocalPlace, lookupMarker: String = DevProject.mainDescLocalPath): LocalPlace {
         val lookupPlace = lookupToParentByName(place, lookupMarker)
         if (place.isEmpty) TODO()

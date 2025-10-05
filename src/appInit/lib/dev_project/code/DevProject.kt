@@ -28,4 +28,9 @@ class DevProject(val rootPlace: LocalPlace) {
 
     val src by lazy { LocalPlace.of(rootPlace.file(srcPlace)) }
     val genTmp by lazy { LocalPlace.of(rootPlace.file(genTmpPlace)) }
+
+    fun place(relativePath: String) = rootPlace.place(relativePath)
+
+    override fun toString() = "$name (${Integer.toHexString(hashCode())}) [file://$rootPlace]"
+
 }
