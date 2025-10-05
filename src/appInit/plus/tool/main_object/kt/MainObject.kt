@@ -62,34 +62,14 @@ abstract class MainObject {
                 val params = QuickRunParams()
                 params.configure()
 
-                val objectName = mainObject::class.java.name.let {
-
-                    if (it.contains(_char)) {
-                        return@let it.split(_char)[0]
-                    }
-                    return@let it
-                }
-                val expectedFileName = "${objectName}.$fileNameExtension_Kt"
-
+                val (expectedFileName, foundFiles) = lookupSrcFileByMainObjectClassName(mainObject::class, devProject)
                 val paramsValueLocalPathToCurrentFile = params.localPathToCurrentSourceFile.value
-
-                //@formatter:on
-                val foundFiles = devProject.src.file.walk().onEnter {
-                    when (it.name) {
-                        "tmp", "out", "build", ".idea", ".git" -> {
-                            System.err.println("skip walk: $it"); false
-                        }
-
-                        else -> true
-                    }
-                }.filter { it.isFile && expectedFileName == it.name }.toList()
-
                 val paramName = params.localPathToCurrentSourceFile.name
 
                 if (foundFiles.isEmpty()) {
                     TODO("file by name='$expectedFileName' not fount in '${devProject.rootPlace}'")
                 } else if (foundFiles.size == 1) {
-                    val thisFile = LocalPlace.of(foundFiles[0])
+                    val thisFile = foundFiles[0]
                     val foundParamList = mutableListOf<String>()
                     val contentWithValidParam = contentWithValidParam(thisFile, paramName, foundParamList, "")
                     if (foundParamList.size == 1 && foundParamList.first().isNotEmpty()) {
@@ -99,7 +79,7 @@ abstract class MainObject {
                 } else {
                     var allFilesValid = true
                     val srcPlacePath = devProject.src.path
-                    foundFiles.map { LocalPlace.of(it) }.forEach { file ->
+                    foundFiles.forEach { file ->
                         //System.err.println("MaidObject try to find file $file")
                         val filePath = file.path
                         val fileRelativePath = if (filePath.startsWith(srcPlacePath)) filePath.substring(srcPlacePath.length).trim(LocalPlace.separatorChar)
@@ -156,6 +136,32 @@ abstract class MainObject {
             }
             contentWithValidParam = contentWithValidParam.trim()
             return contentWithValidParam
+        }
+
+        private fun lookupSrcFileByMainObjectClassName(kClass: kotlin.reflect.KClass<out MainObject>, devProject: DevProject) = lookupSrcFileByClassName(kClass, devProject)
+
+        private fun lookupSrcFileByClassName(kClass: kotlin.reflect.KClass<*>, devProject: DevProject): Pair<String, List<LocalPlace.Impl>> {
+            val objectName = kClass.java.name.let {
+
+                if (it.contains(_char)) {
+                    return@let it.split(_char)[0]
+                }
+                return@let it
+            }
+
+            val expectedFileName = "${objectName}.$fileNameExtension_Kt"
+
+            val foundFiles = devProject.src.file.walk().onEnter {
+                when (it.name) {
+                    "tmp", "out", "build", ".idea", ".git" -> {
+                        System.err.println("skip walk: $it"); false
+                    }
+
+                    else -> true
+                }
+            }.filter { it.isFile && expectedFileName == it.name }.toList()
+
+            return expectedFileName to foundFiles.map { LocalPlace.of(it) }
         }
     }
 }
