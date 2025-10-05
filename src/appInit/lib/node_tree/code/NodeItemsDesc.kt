@@ -7,9 +7,9 @@ object NodeItemsDesc {
         interface KtJv : Content.Type
     }
 
-    //@formatter:off
+    //  @formatter:off
         interface Content {
-            interface Type{ object Empty:Type }
+            interface Type { object Empty:Type }
             val type: Type
         }
         interface CopyOf {
@@ -26,16 +26,14 @@ object NodeItemsDesc {
         }
         /*sealed*/ interface Node {
             object Unit    :Node
-            interface SrcPlace:Node
-            /*sealed*/ interface Item :Node{
+            interface SrcPlace :Node
+            /*sealed*/ interface Item :Node  {
                 interface General :Item     {   val contentGeneral: ItemContent  }
                 interface Py   :Item     {      val contentPy: ItemContent  }
                 interface Jv   :Item     {      val contentJv: ItemContent  }
                 interface Kt   :Item     {      val contentKt: ItemContent  }
             }
-        }
-
-        //@formatter:on
+        }// @formatter:on
 
 //        fun readType(n: Node) = content(n).type
 //        fun content(n: Node): Content {
