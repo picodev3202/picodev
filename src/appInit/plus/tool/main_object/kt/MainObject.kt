@@ -26,7 +26,7 @@ abstract class MainObject {
             return@let it
         }
 
-    val logTagName: String get() = objectName
+    val logTagName: String by lazy { objectName }
     open fun main(args: Args): Unit = System.err.println(" please 'override fun main(args: Args)' in $objectName")
 
     companion object {
