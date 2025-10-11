@@ -31,6 +31,6 @@ class DevProject(val rootPlace: LocalPlace) {
 
     fun place(relativePath: String) = rootPlace.place(relativePath)
 
-    override fun toString() = "$name (${Integer.toHexString(hashCode())}) [file://$rootPlace]"
+    //override fun toString() = "$name (${Integer.toHexString(hashCode())}) [file://$rootPlace]"
 
 }
