@@ -8,10 +8,10 @@ interface LocalPlace {
     companion object {
         private const val DEBUG_LOGS = true
         private inline fun debugLogs(getText: () -> String) = if (DEBUG_LOGS) println(getText()) else Unit
-        val empty = Impl(localFile(""))
+        val empty: LocalPlace = Impl(localFile(""))
         val separatorChar = java.io.File.separatorChar
-        fun of(file: java.io.File) = Impl(file.absoluteFile.canonicalFile)
-        fun of(path: String) = Impl(localFile(path).absoluteFile.canonicalFile)
+        fun of(file: java.io.File): LocalPlace = Impl(file.absoluteFile.canonicalFile)
+        fun of(path: String): LocalPlace = Impl(localFile(path).absoluteFile.canonicalFile)
         fun localFile(path: String): java.io.File = java.io.File(path.trim())
     }
 
