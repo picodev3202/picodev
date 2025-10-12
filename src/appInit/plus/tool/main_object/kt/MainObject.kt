@@ -154,7 +154,7 @@ abstract class MainObject {
 
         private fun lookupSrcFileByMainObjectClassName(kClass: kotlin.reflect.KClass<out MainObject>, devProject: DevProject) = lookupSrcFileByClassName(kClass, devProject)
 
-        fun lookupSrcFileByClassName(kClass: kotlin.reflect.KClass<*>, devProject: DevProject): Pair<String, List<LocalPlace.Impl>> {
+        fun lookupSrcFileByClassName(kClass: kotlin.reflect.KClass<*>, devProject: DevProject): Pair<String, List<LocalPlace>> {
             val expectedFileName = "${detectClassNameForFileName(kClass)}.$fileNameExtension_Kt"
 
             val foundFiles = devProject.src.file.walk().onEnter {
@@ -165,7 +165,11 @@ abstract class MainObject {
 
                     else -> true
                 }
-            }.filter { it.isFile && expectedFileName == it.name }.toList()
+            }.filter {
+                it.isFile
+                        && expectedFileName == it.name
+                        && !(it.parent?.endsWith("/codeLib/codeModule") ?: false)
+            }.toList()
 
             return expectedFileName to foundFiles.map { LocalPlace.of(it) }
         }
