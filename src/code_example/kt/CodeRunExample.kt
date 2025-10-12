@@ -1,10 +1,4 @@
-object CodeRunExample {
-    val logTag by lazy { Val.detectLogTag() }
-    val thisFile by lazy { Val.lookupSrcFileByClassName() }
-
-    object Val : MainObject() {
-        val devProject by lazy { DevProjectLookup.fromCurrentDir() }
-    }
+object CodeRunExample : DevObject() {
 
     /*@formatter:off*/ object Go001 {@JvmStatic fun main(args: Array<String>) = code01( ) }
     /*@formatter:off*/ object Go002 {@JvmStatic fun main(args: Array<String>) = code02( ) }
@@ -12,9 +6,8 @@ object CodeRunExample {
 
     private fun code01() {
         println("$logTag.code01")
-        println("$logTag.code01 ${Val.devProject}")
-        println("$logTag.code01 ${Val.logTagName}")
-        println("$logTag.code01 ${Val.objectName}")
+        println("$logTag.code01 $logTagName")
+        println("$logTag.code01 $objectName")
     }
 
     private fun code02() {
