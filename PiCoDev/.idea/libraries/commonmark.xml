@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="commonmark">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../wwgen/libs/lib_commonmark/commonmark-0.26.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

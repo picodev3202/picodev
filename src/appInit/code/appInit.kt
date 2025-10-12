@@ -55,11 +55,11 @@ object appInit : To() {
         }
     }
 
-    object library {
+    abstract class LibraryAbstract : To() {
         val ide_lib = ____________l - Library("ide_lib")
-        val jackson_databind = ___l - Library("jackson-databind")
-        val jsoup = ______________l - Library("jsoup")
     }
+
+    object library : RegisterLibrary()
 
     object srcOf {
         val local_place = __________l - src.appInit.lib.local_place
@@ -78,7 +78,7 @@ object appInit : To() {
         val appInit = _______________l - Template.appInit()
     }
 
-    object src : ModuleRegister.src()
+    object src : RegisterModule.src()
 
 
     @JvmStatic

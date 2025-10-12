@@ -1,5 +1,5 @@
 //
-object ModuleRegister : To() {
+object RegisterModule : To() {
 
     @Suppress("ClassName", "PropertyName", "unused")
     abstract class src : appInit.SrcAbstract() {

@@ -9,6 +9,7 @@ object LoadLib {
         println("LoadLib.main " + devProject.rootPlace)
 
         listOf(
+            LibInfo("https://repo1.maven.org/maven2/org/commonmark/commonmark/0.26.0/commonmark-0.26.0.jar"), // https://mvnrepository.com/artifact/org.commonmark/commonmark/
             LibInfo("https://repo1.maven.org/maven2/org/jsoup/jsoup/1.21.2/jsoup-1.21.2.jar"),
             LibInfo(
                 "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.20.0/jackson-databind-2.20.0.jar",
