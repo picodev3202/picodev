@@ -41,7 +41,7 @@ class Code {
                         || (objectNameToRun.isEmpty() && objectName.first().isLowerCase())
                     ) {
                         needObjectToRun = false
-                        """${objectName}.main(arrayOf("${it.absolutePath}"))"""
+                        """${objectName}.main(arrayOf("${it.absolutePath.replace("\\", "/")}"))"""
                     } else {
                         """// ${objectName}.main(arrayOf("${it.absolutePath}"))"""
                     }
